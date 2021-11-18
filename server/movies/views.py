@@ -36,10 +36,6 @@ def movie_detail(request, movie_pk):
         return Response(serializer.data)
 
 
-def movie_like(request, movie_pk):
-    pass
-
-
 @api_view(['GET', 'POST'])
 def review_list_create(request):
     if request.method == 'GET':
@@ -72,10 +68,6 @@ def review_detail_update_delete(request, review_pk):
     elif request.method == 'DELETE':
         review.delete()
         return Response({ 'id': review_pk }, status=status.HTTP_204_NO_CONTENT)
-
-
-def review_like(request):
-    pass
 
 
 @api_view(['GET', 'POST'])
@@ -112,5 +104,13 @@ def comment_detail_update_delete(request, comment_pk):
         return Response({ 'id': comment_pk }, status=status.HTTP_204_NO_CONTENT)
 
 
-def follow(request):
+def movie_like(request, movie_pk):
+    pass
+
+
+def review_like(request, review_pk):
+    pass
+
+
+def follow(request, user_pk):
     pass
