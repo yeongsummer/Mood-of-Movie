@@ -34,7 +34,7 @@ class Movie(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     genres = models.ManyToManyField(Genre)
     like_users = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='like_movies')
-    # actor = models.ForeignKey(Actor)
+    actor = models.ForeignKey(Actor, on_delete=models.CASCADE)
     director = models.CharField(max_length=50)
 
     def __str__(self):
