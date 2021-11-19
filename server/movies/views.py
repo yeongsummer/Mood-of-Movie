@@ -11,21 +11,61 @@ from .serializers import (
     )
 from rest_framework.response import Response
 from rest_framework import status
-from .models import Movie, Review, Comment
+from .models import Movie, Review, Comment, Genre, Actor, Director, Keyword
 from django.contrib.auth import get_user_model
+from tmdb import TMDBHelper
+import requests
 
 
-@permission_classes([AllowAny])
 @api_view(['GET'])
+@permission_classes([AllowAny])
 def movie_list(request):
     if request.method == 'GET':
-        movies = get_list_or_404(Movie)
+        movies = movie_ranking()
         serializers = MovielistSerializer(movies, many=True)
         return Response(serializers.data)
 
 
-@permission_classes([AllowAny])
+def movie_ranking():
+    tmdbhelper = TMDBHelper('fc736c578445be44e87a385015c5331d')
+    url = tmdbhelper.get_request_url(method=f'/movie/popular', language='ko', region='KR')
+    response = requests.get(url).json()
+    movies = []
+    for movie in response['results']:
+        movie_obj, flag = Movie.objects.get_or_create(
+            movie_id = movie['id'],
+            title = movie['title'],
+            overview = movie['overview'],
+            release_date = movie['release_date'],
+            popularity = movie['popularity'],
+            poster_path = movie['poster_path'],
+            vote_average = movie['vote_average'],
+            vote_count = movie['vote_count'],
+        )
+        if flag :
+            for genre_pk in movie['genre_ids']:
+                genre = get_object_or_404(Genre, pk=genre_pk)
+                movie_obj.genres.add(genre)
+
+            movie_id = movie['id']
+            url = tmdbhelper.get_request_url(method=f'/movie/{movie_id}/credits', language='ko', region='KR')
+            response = requests.get(url).json()
+
+            for cast in response['cast'] :
+                if cast['cast_id'] < 10 :
+                    actor = Actor.objects.get_or_create(id = int(cast['id']), name = cast['name'])[0]
+                    movie_obj.actors.add(actor)
+
+            for crew in response['crew'] :
+                if crew['department'] == 'Directing' and crew['job'] == 'Director':
+                    director = Director.objects.get_or_create(id = int(crew['id']), name = crew['name'])[0]
+                    movie_obj.directors.add(director)
+
+        movies.append(movie_obj)
+    return movies
+
 @api_view(['GET'])
+@permission_classes([AllowAny])
 def movie_detail(request, movie_pk):
     movie = get_object_or_404(Movie, pk=movie_pk)
     if request.method == 'GET':
