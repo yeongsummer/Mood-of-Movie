@@ -1,7 +1,9 @@
 <template>
   <v-app>
-    <app-navbar/>
-    <movieList/>
+    <Navbar/>
+    <v-main>
+      <MovieList/>
+    </v-main>
   </v-app>
 </template>
 
@@ -13,7 +15,7 @@ export default {
   name: 'App',
 
   components: {
-    appNavbar: Navbar,
+    Navbar,
     MovieList,
   },
 
