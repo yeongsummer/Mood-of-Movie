@@ -10,7 +10,7 @@ class Genre(models.Model):
         return self.name
 
 
-class Directors(models.Model):
+class Director(models.Model):
     id = models.IntegerField(primary_key=True)
     name = models.CharField(max_length=100)
 
@@ -18,7 +18,15 @@ class Directors(models.Model):
         return self.name
 
 
-class Actors(models.Model):
+class Actor(models.Model):
+    id = models.IntegerField(primary_key=True)
+    name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name
+
+
+class Keyword(models.Model):
     id = models.IntegerField(primary_key=True)
     name = models.CharField(max_length=100)
 
@@ -27,15 +35,19 @@ class Actors(models.Model):
 
 
 class Movie(models.Model):
+    movie_id = models.IntegerField()
     title = models.CharField(max_length=100)
     overview = models.TextField()
     release_date = models.DateField()
-    poster_path = models.TextField()
-    tag = models.TextField()
-    genres = models.ManyToManyField(Genre)
+    popularity = models.FloatField(null=True)
+    poster_path = models.TextField(null=True)
+    vote_average = models.FloatField(null=True)
+    vote_count = models.IntegerField(null=True)
     like_users = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='like_movies')
-    actors = models.ManyToManyField(Actors)
-    directors = models.ManyToManyField(Directors)
+    keywords = models.ManyToManyField(Keyword)
+    genres = models.ManyToManyField(Genre)
+    actors = models.ManyToManyField(Actor)
+    directors = models.ManyToManyField(Director)
 
     def __str__(self):
         return self.title
@@ -45,7 +57,8 @@ class Review(models.Model):
     content = models.TextField()
     rank = models.IntegerField(default=5)
     movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
-    # user = models.ForeignKey(settings.AUTH_USER_MODEL)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, default="")
+    like_users = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='like_reviews')
 
     def __str__(self):
         return self.title
@@ -55,7 +68,7 @@ class Comment(models.Model):
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
-    # user = models.ForeignKey(settings.AUTH_USER_MODEL)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, default="")
 
     def __str__(self):
         return self.content
