@@ -1,5 +1,4 @@
-from django.shortcuts import render, get_object_or_404, get_list_or_404
-from django.views.decorators.http import require_safe, require_POST
+from django.shortcuts import get_object_or_404, get_list_or_404
 from rest_framework.decorators import api_view
 from .serializers import (
     MovielistSerializer, 
@@ -12,6 +11,7 @@ from .serializers import (
 from rest_framework.response import Response
 from rest_framework import status
 from .models import Movie, Review, Comment
+from django.contrib.auth import get_user_model
 
 
 @api_view(['GET', 'POST'])
@@ -104,13 +104,63 @@ def comment_detail_update_delete(request, comment_pk):
         return Response({ 'id': comment_pk }, status=status.HTTP_204_NO_CONTENT)
 
 
+@api_view(['POST'])
 def movie_like(request, movie_pk):
-    pass
+    movie = get_object_or_404(Movie, pk=movie_pk)
+    if movie.like_user.filter(pk=request.user.pk).exists():
+        movie.like_user.remove(request.user)
+        liked = False
+    else:
+        movie.like_user.add(request.user)
+        liked = True
+    context = {
+        'liked': liked,
+        'like_count': movie.like_user.count(),
+    }
+    return Response(context, status=status.HTTP_200_OK)
 
 
+@api_view(['POST'])
 def review_like(request, review_pk):
+    review = get_object_or_404(Review, pk=review_pk)
+    if review.like_user.filter(pk=request.user.pk).exists():
+        review.like_user.remove(request.user)
+        liked = False
+    else:
+        review.like_user.add(request.user)
+        liked = True
+    context = {
+        'liked':liked,
+        'like_count':review.like_user.count(),
+    }
+    return Response(context, status=status.HTTP_200_OK)
+
+
+def movie_recommend(request, movie_pk):
     pass
 
 
-def follow(request, user_pk):
-    pass
+# @api_view(['POST'])
+# def user_reviews(request, user_pk):
+#     user = get_object_or_404(get_user_model(), pk=user_pk)
+#     reviews = user.review_set.all()
+#     data = []
+#     reviews_pk = request.data
+#     for review_pk in reviews_pk:
+#         review = get_object_or_404(Review, pk=review_pk)
+#         serializer = ReviewSerializer(review)
+#         data.append(serializer.data)
+#     return Response(data)
+
+
+# @api_view(['POST'])
+# def user_comments(request, user_pk):
+#     user = get_object_or_404(get_user_model(), pk=user_pk)
+#     comments = user.comment_set.all()
+#     data = []
+#     comments_pk = request.data
+#     for comment_pk in comments_pk:
+#         comment = get_object_or_404(Comment, pk=comment_pk)
+#         serializer = CommentSerializer(comment)
+#         data.append(serializer.data)
+#     return Response(data)
