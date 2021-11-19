@@ -25,6 +25,7 @@ class Actor(models.Model):
     def __str__(self):
         return self.name
 
+
 class Keyword(models.Model):
     id = models.IntegerField(primary_key=True)
     name = models.CharField(max_length=100)
@@ -35,6 +36,7 @@ class Keyword(models.Model):
 
 class Movie(models.Model):
     title = models.CharField(max_length=100)
+    movie_id = models.IntegerField()
     overview = models.TextField()
     release_date = models.DateField()
     popularity = models.FloatField(null=True)

@@ -1,5 +1,6 @@
 from django.shortcuts import get_object_or_404, get_list_or_404
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import AllowAny
 from .serializers import (
     MovielistSerializer, 
     MovieSerializer, 
@@ -14,20 +15,16 @@ from .models import Movie, Review, Comment
 from django.contrib.auth import get_user_model
 
 
-@api_view(['GET', 'POST'])
-def movie_list_create(request):
+@permission_classes([AllowAny])
+@api_view(['GET'])
+def movie_list(request):
     if request.method == 'GET':
         movies = get_list_or_404(Movie)
         serializers = MovielistSerializer(movies, many=True)
         return Response(serializers.data)
 
-    elif request.method == 'POST':
-        serializer = MovieSerializer(data=request.data)
-        if serializer.is_valid(raise_exception=True):
-            serializer.save(user=request.user)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-
+@permission_classes([AllowAny])
 @api_view(['GET'])
 def movie_detail(request, movie_pk):
     movie = get_object_or_404(Movie, pk=movie_pk)
