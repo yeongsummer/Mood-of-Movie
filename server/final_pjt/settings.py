@@ -39,6 +39,8 @@ INSTALLED_APPS = [
     #library
     'rest_framework',
     'corsheaders',
+    'numpy',
+    'sklearn',
 
     'django.contrib.admin',
     'django.contrib.auth',
