@@ -32,6 +32,7 @@ for res in response['genres']:
 
 for movie in movie_list:
     movie_obj = Movie.objects.create(
+        movie_id = movie['id'],
         title = movie['title'],
         overview = movie['overview'],
         release_date = movie['release_date'],
