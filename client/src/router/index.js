@@ -2,8 +2,8 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Signup from '../views/accounts/Signup.vue'
 import Login from '../views/accounts/Login.vue'
-import MovieList from '../views/movies/MovieList.vue'
 import Password from '../views/accounts/Password.vue'
+import MovieList from '../views/movies/MovieList.vue'
 
 
 Vue.use(VueRouter)

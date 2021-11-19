@@ -1,5 +1,5 @@
 <template>
-  <v-app>
+  <div class="navbar">
     <v-app-bar
       app
       color="white"
@@ -22,7 +22,10 @@
 
       <span v-if="isLogin">
         <v-btn text>
-          <router-link @click.native="logout" to="#">Logout</router-link>
+          <router-link :to="{ name: 'Password' }" class="text-btn">Password</router-link> 
+        </v-btn>
+        <v-btn text>
+          <router-link @click.native="logout" to="#" class="text-btn">Logout</router-link>
         </v-btn>
       </span>
       <span v-else>
@@ -32,24 +35,19 @@
         <v-btn text>
           <router-link :to="{ name: 'Signup' }" class="text-btn">Signup</router-link>
         </v-btn>
-        <!-- <v-btn
-          icon
-        >
-          <v-icon>{{ icons.mdiAccount }}</v-icon>
-        </v-btn> -->
+        <v-btn text>
+          <router-link to="#" class="text-btn">Profile</router-link>
+        </v-btn>
       </span>
-      <v-btn
-        icon
-        color="primary"
-      >
-        <v-icon>fas fa-search</v-icon>
+      <v-btn text>
+        <router-link to="#" class="text-btn">Search</router-link>
       </v-btn>
     </v-app-bar>
 
     <v-main>
       <router-view @login="isLogin=true"/>
     </v-main>
-  </v-app>
+  </div>
 </template>
 
 <script>
@@ -78,6 +76,16 @@ export default {
 </script>
 
 <style scoped>
+.navbar{
+  display:inline-flex;
+  position:relative;
+  overflow:hidden;
+  max-width:100%;
+  height: 48px;
+  background-color:white;
+  padding:0 20px;
+}
+
 .text-btn {
   color:#000;
   text-decoration:none;
