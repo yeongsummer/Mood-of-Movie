@@ -1,24 +1,41 @@
 <template>
-  <div>
-    <h1>Login</h1>
-    <div>
-      <label for="username">사용자 이름: </label>
-      <input 
-        type="text" 
-        id="username"
-        v-model="credentials.username"
-      >
-    </div>
-    <div>
-      <label for="password">비밀번호: </label>
-      <input 
-        type="password" 
-        id="password"
-        v-model="credentials.password"
-      >
-    </div>
-    <button @click="login">로그인</button>
-  </div>
+  <v-container class="fill-height" fluid>
+    <v-row align="center" justify="center">
+      <v-col cols="12" sm="8" md="4">
+        <v-card class="elevation-12">
+          <v-card-text>
+            <v-form>
+              <v-text-field
+                id="user_id"
+                label="아이디"
+                name="user_id"
+                type="text"
+                v-model="credentials.username"
+              ></v-text-field>
+
+              <v-text-field
+                id="password"
+                label="비밀번호"
+                name="password"
+                type="password"
+                @keypress.enter="login"
+                v-model="credentials.password"
+              ></v-text-field>
+            </v-form>
+          </v-card-text>
+          <v-card-actions>
+            <v-btn
+              class="ma-2 white--text"
+              color="light-green lighten-2"
+              @click="login"
+            >
+              로그인
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script>
