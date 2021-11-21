@@ -20,26 +20,16 @@
       <v-spacer></v-spacer>
 
       <span v-if="isLogin">
-        <v-btn text>
-          <router-link :to="{ name: 'Password' }" class="text-btn">Password</router-link> 
-        </v-btn>
-        <v-btn text>
-          <router-link @click.native="logout" to="#" class="text-btn">Logout</router-link>
-        </v-btn>
+        <v-btn text @click="moveToLink({ name: 'Password' })">Password</v-btn>
+        <v-btn text @click.native="logout">Logout</v-btn>
       </span>
       <span v-else>
-        <v-btn text>
-          <router-link :to="{ name: 'Login' }" class="text-btn">Login</router-link> 
-        </v-btn>
-        <v-btn text>
-          <router-link :to="{ name: 'Signup' }" class="text-btn">Signup</router-link>
-        </v-btn>
-        <v-btn text>
-          <router-link to="#" class="text-btn">Profile</router-link>
-        </v-btn>
+        <v-btn text @click="moveToLink({ name: 'Login' })">Login</v-btn>
+        <v-btn text @click="moveToLink({ name: 'Signup' })">Signup</v-btn>
+        <v-btn text>Profile</v-btn>
       </span>
-      <v-btn text>
-        <router-link to="#" class="text-btn">Search</router-link>
+      <v-btn icon>
+        <v-icon>mdi-magnify</v-icon>
       </v-btn>
     </v-app-bar>
 
@@ -50,6 +40,8 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex'
+
 export default {
   name: 'Navbar',
   data: function () {
@@ -58,6 +50,8 @@ export default {
     }
   },
   methods: {
+    ...mapActions(['moveToLink']),
+
     logout: function () {
       this.isLogin = false,
       localStorage.removeItem('jwt')

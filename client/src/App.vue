@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <Navbar/>
+    <navbar/>
     <v-main>
       <div id="nav">
         <span>

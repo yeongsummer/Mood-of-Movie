@@ -3,16 +3,12 @@
     <v-row align="center" justify="center">
       <v-col cols="12" sm="8" md="4">
         <v-card class="elevation-12">
-          <v-toolbar color="primary" dark flat>
-            <v-toolbar-title>Password Change Form</v-toolbar-title>
-          </v-toolbar>
           <v-card-text>
             <v-form>
               <v-text-field
                 id="old_password"
                 label="기존 비밀번호"
                 name="old_password"
-                prepend-icon="mdi-lock"
                 type="password"
                 v-model="changepasswordData.old_password"
                 @keypress.enter="changepassword(changepasswordData)"
@@ -23,7 +19,6 @@
                 id="new_password1"
                 label="새 비밀번호"
                 name="new_password1"
-                prepend-icon="mdi-lock"
                 type="password"
                 v-model="changepasswordData.new_password1"
                 @keypress.enter="changepassword(changepasswordData)"
@@ -34,7 +29,6 @@
                 id="new_password2"
                 label="새 비밀번호 확인"
                 name="new_password2"
-                prepend-icon="mdi-lock"
                 type="password"
                 v-model="changepasswordData.new_password2"
                 @keypress.enter="changepassword(changepasswordData)"
@@ -43,8 +37,13 @@
             </v-form>
           </v-card-text>
           <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn color="primary" @click="changepassword(changepasswordData)">Submit</v-btn>
+            <v-btn
+              class="ma-2 white--text"
+              color="green lighten-3"
+              @click="changepassword(changepasswordData)"
+            >
+              변경 하기
+            </v-btn>
           </v-card-actions>
         </v-card>
       </v-col>
@@ -76,5 +75,8 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
+#btn {
+  color: #8FBC8B;
+}
 </style>

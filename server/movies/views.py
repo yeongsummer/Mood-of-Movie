@@ -15,6 +15,7 @@ from .models import Movie, Review, Comment, Genre, Actor, Director, Keyword
 from django.contrib.auth import get_user_model
 from tmdb import TMDBHelper
 import requests
+from .recommend import recommend
 
 
 @api_view(['GET'])
@@ -64,13 +65,13 @@ def movie_ranking():
         movies.append(movie_obj)
     return movies
 
-@api_view(['GET'])
-@permission_classes([AllowAny])
-def movie_detail(request, movie_pk):
-    movie = get_object_or_404(Movie, pk=movie_pk)
-    if request.method == 'GET':
-        serializer = MovieSerializer(movie)
-        return Response(serializer.data)
+# @api_view(['GET'])
+# @permission_classes([AllowAny])
+# def movie_detail(request, movie_pk):
+#     movie = get_object_or_404(Movie, pk=movie_pk)
+#     if request.method == 'GET':
+#         serializer = MovieSerializer(movie)
+#         return Response(serializer.data)
 
 
 @api_view(['GET', 'POST'])
@@ -173,8 +174,11 @@ def review_like(request, review_pk):
     return Response(context, status=status.HTTP_200_OK)
 
 
-def movie_recommend(request, movie_pk):
-    pass
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def movie_recommend(request, movie_title):
+    recommended_movie = recommend(movie_title)
+    print(recommended_movie)
 
 
 # @api_view(['POST'])
