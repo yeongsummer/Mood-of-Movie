@@ -3,10 +3,9 @@
     <h1 class="text-center" style="margin-bottom: 20px;">TOP 20</h1>
     <v-row no-gutters class="justify-center">
       <movie-list-item 
-        v-for="movie in movies" 
+        v-for="movie in recommended_movies" 
         :key="movie.id"
         :movie="movie"
-        @select-movie="onSelectMovie"
       >
       </movie-list-item>
     </v-row>
@@ -16,26 +15,27 @@
 <script>
 import MovieListItem from '@/components/MovieListItem.vue'
 import axios from 'axios'
-// import _ from 'lodash'
 
 export default {
-  name: 'MovieList',
+  name: 'MovieRecommend',
   components: {
     MovieListItem,
   },
-  data: function () {
-    return {
-      movies: {
-        type: Array,
-        required: true
+    data: function () {
+      return {
+        movie_title: '',
+        recommended_movies: {
+          type: Array,
+          required: true
+        }
       }
-    }
   },
   methods: {
-    getMovies: function () {
+    getRecommendedMovies: function (movie_title) {
       axios({
         method: 'get',
-        url: 'http://127.0.0.1:8000/movies/',
+        url: 'http://127.0.0.1:8000/movies/movie_recommend',
+        params: movie_title,
         })
         .then(res => {
           console.log(res)
@@ -47,7 +47,7 @@ export default {
     },
   },
   created: function () {
-    this.getMovies()
+    this.getRecommendedMovies(this.movie_title)
   }
 }
 </script>

@@ -3,7 +3,6 @@
     <v-app-bar
       app
       color="white"
-      fixed
     >
       <v-spacer></v-spacer>
 
