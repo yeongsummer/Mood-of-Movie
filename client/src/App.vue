@@ -1,22 +1,22 @@
 <template>
   <v-app>
-    <Navbar/>
+    <navbar/>
     <v-main>
-      <MovieList/>
+      <router-view/>
     </v-main>
   </v-app>
 </template>
 
 <script>
 import Navbar from '@/components/Navbar.vue'
-import MovieList from "@/views/movies/MovieList.vue";
+// import MovieList from "@/views/movies/MovieList.vue"
 
 export default {
   name: 'App',
 
   components: {
     Navbar,
-    MovieList,
+    // MovieList,
   },
 
   data: () => ({
