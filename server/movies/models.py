@@ -37,7 +37,6 @@ class Keyword(models.Model):
 class Movie(models.Model):
     movie_id = models.IntegerField()
     title = models.CharField(max_length=100)
-    movie_id = models.IntegerField()
     overview = models.TextField()
     release_date = models.DateField()
     popularity = models.FloatField(null=True)
@@ -55,8 +54,11 @@ class Movie(models.Model):
 
 
 class Review(models.Model):
+    title = models.CharField(max_length=100, default='')
     content = models.TextField()
     rank = models.IntegerField(default=5)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
     movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, default="")
     like_users = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='like_reviews')
@@ -68,10 +70,8 @@ class Review(models.Model):
 class Comment(models.Model):
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
-    movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
+    review = models.ForeignKey(Review, on_delete=models.CASCADE)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, default="")
 
     def __str__(self):
         return self.content
-
-

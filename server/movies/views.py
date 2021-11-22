@@ -1,9 +1,11 @@
+from django.http.response import JsonResponse
 from django.shortcuts import get_object_or_404, get_list_or_404
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
 from .serializers import (
     MovielistSerializer, 
-    MovieSerializer, 
+    MovieSerializer,
+    ReviewDetailSerializer, 
     ReviewlistSerializer,
     ReviewSerializer, 
     CommentlistSerializer,
@@ -33,17 +35,17 @@ def movie_ranking():
     response = requests.get(url).json()
     movies = []
     for movie in response['results']:
-        movie_obj, flag = Movie.objects.get_or_create(
-            movie_id = movie['id'],
-            title = movie['title'],
-            overview = movie['overview'],
-            release_date = movie['release_date'],
-            popularity = movie['popularity'],
-            poster_path = movie['poster_path'],
-            vote_average = movie['vote_average'],
-            vote_count = movie['vote_count'],
-        )
-        if flag :
+        if not Movie.objects.filter(movie_id=movie['id']).exists():
+            movie_obj = Movie.objects.create(
+                movie_id = movie['id'],
+                title = movie['title'],
+                overview = movie['overview'],
+                release_date = movie['release_date'],
+                popularity = movie['popularity'],
+                poster_path = movie['poster_path'],
+                vote_average = movie['vote_average'],
+                vote_count = movie['vote_count'],
+                )
             for genre_pk in movie['genre_ids']:
                 genre = get_object_or_404(Genre, pk=genre_pk)
                 movie_obj.genres.add(genre)
@@ -61,7 +63,8 @@ def movie_ranking():
                 if crew['department'] == 'Directing' and crew['job'] == 'Director':
                     director = Director.objects.get_or_create(id = int(crew['id']), name = crew['name'])[0]
                     movie_obj.directors.add(director)
-
+        else:
+            movie_obj = Movie.objects.filter(movie_id=movie['id'])[0]
         movies.append(movie_obj)
     return movies
 
@@ -75,16 +78,20 @@ def movie_ranking():
 
 
 @api_view(['GET', 'POST'])
-def review_list_create(request):
+@permission_classes([AllowAny])  # 추후에 삭제해야함!!!!
+def review_list_create(request, movie_pk):
     if request.method == 'GET':
-        reviews = get_list_or_404(Review)
+        reviews = Review.objects.filter(movie_id=movie_pk)
+        print(reviews)
         serializers = ReviewlistSerializer(reviews, many=True)
         return Response(serializers.data)
 
     elif request.method == 'POST':
+        movie = get_object_or_404(Movie, pk=movie_pk)
+        print(movie)
         serializer = ReviewSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
-            serializer.save(user=request.user)
+            serializer.save(user=request.user, movie=movie)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
@@ -92,7 +99,7 @@ def review_list_create(request):
 def review_detail_update_delete(request, review_pk):
     review = get_object_or_404(Review, pk=review_pk)
     if request.method == 'GET':
-        serializer = ReviewSerializer(review)
+        serializer = ReviewDetailSerializer(review)
         return Response(serializer.data)
 
     elif not request.user.review_set.filter(pk=review_pk).exists():
@@ -109,16 +116,19 @@ def review_detail_update_delete(request, review_pk):
 
 
 @api_view(['GET', 'POST'])
-def comment_list_create(request):
+def comment_list_create(request, review_pk):
     if request.method == 'GET':
-        comments = get_list_or_404(Comment)
+        comments = Comment.objects.filter(review_id=review_pk)
+        print('함수실행')
         serializers = CommentlistSerializer(comments, many=True)
         return Response(serializers.data)
 
     elif request.method == 'POST':
-        serializer = CommentlistSerializer(data=request.data)
+        review = get_object_or_404(Review, pk=review_pk)
+        print('review',review)
+        serializer = CommentSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
-            serializer.save(user=request.user)
+            serializer.save(user=request.user, review=review)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
@@ -205,3 +215,25 @@ def movie_recommend(request, movie_title):
 #         serializer = CommentSerializer(comment)
 #         data.append(serializer.data)
 #     return Response(data)
+
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def getMovieVideoKey(request, movie_pk):
+    tmdbhelper = TMDBHelper('fc736c578445be44e87a385015c5331d')
+    movie = Movie.objects.filter(pk=movie_pk)[0]
+    url = tmdbhelper.get_request_url(method=f'/movie/{movie.movie_id}/videos')
+    print(url)
+    response = requests.get(url).json()
+    video_key = response['results'][-1]['key']
+    movie = Movie.objects.filter(pk=movie_pk)[0]
+    directors = movie.directors.all()
+    director_list = []
+    for director in directors:
+        director_list.append(director.name)
+    print('directors: ', director_list)
+    context = {
+        'video_key': video_key,
+        'director_list': director_list,
+    }
+    return Response(context, status=status.HTTP_200_OK)

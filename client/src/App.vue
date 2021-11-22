@@ -2,12 +2,6 @@
   <v-app>
     <navbar/>
     <v-main>
-      <div id="nav">
-        <span>
-          <router-link :to="{ name: 'MovieList' }" class="text-btn">Ranking</router-link> | 
-          <router-link :to="{ name: 'MovieRecommend' }" class="text-btn">Recommend</router-link>
-        </span>
-      </div>
     <router-view/>
     </v-main>
   </v-app>
@@ -26,17 +20,5 @@ export default {
 </script>
 
 <style>
-  #nav {
-    text-align: center;
-    padding: 30px;
-  }
 
-  #nav a {
-    font-weight: bold;
-    color: #2c3e50;
-  }
-
-  #nav a.router-link-exact-active {
-    color: #42b983;
-  }
 </style>
