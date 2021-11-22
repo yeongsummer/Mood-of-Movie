@@ -12,7 +12,7 @@
         <p>나만의 영화 경험을 공유하세요.</p>
       </div>
     </div>
-    <h1 class="text-center" style="margin: 40px;">TOP 20</h1>
+    <h1 class="text-center" style="margin: 20px;">TOP 20</h1>
     <v-row no-gutters class="justify-center background" :style="{'background-image': 'url('+require('@/assets/list_cover.png')+')'}">
       <movie-list-item 
         v-for="movie in movies" 
@@ -82,7 +82,7 @@ export default {
 }
 
 .background {
-  background-size: 100% 80%;
+  background-size: 100% 100%;
 }
 
 .main_text{

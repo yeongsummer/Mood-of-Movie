@@ -54,8 +54,8 @@
           headers: this.setToken()
         })
           .then(res => {
-            console.log(res)
-            this.$store.dispatch('createComments', commentItem) 
+            console.log(res.data)
+            this.$store.dispatch('createComments', res.data) 
             this.content = ''
           })
           .catch(err => {
