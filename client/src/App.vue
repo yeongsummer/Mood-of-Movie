@@ -1,14 +1,8 @@
 <template>
   <v-app>
     <navbar/>
-    <v-main>
-      <div id="nav">
-        <span>
-          <router-link :to="{ name: 'MovieList' }" class="text-btn">Ranking</router-link> | 
-          <router-link :to="{ name: 'MovieRecommend' }" class="text-btn">Recommend</router-link>
-        </span>
-      </div>
-    <router-view/>
+    <v-main style="padding-top: 0px;">
+      <router-view/>
     </v-main>
   </v-app>
 </template>
@@ -38,5 +32,9 @@ export default {
 
   #nav a.router-link-exact-active {
     color: #42b983;
+  }
+
+  #main {
+    padding-top: 0px;
   }
 </style>
