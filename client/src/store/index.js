@@ -8,7 +8,7 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    username: null,
+    nickname: null,
     login: false,
     login_user: null,
     comments: [],

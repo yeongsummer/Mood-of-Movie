@@ -82,27 +82,53 @@
           class="transition-fast-in-fast-out v-card--reveal"
           style="height: 100%;"
         >
-          <v-card-text class="pb-0">
-            <p class="text-h4 text--primary">
-              리뷰
-            </p>
+          <v-toolbar
+            color="cyan"
+            dark
+          >
+
+            <v-toolbar-title>Review</v-toolbar-title>
+
+            <v-spacer></v-spacer>
+
             <v-btn
-                text
-                @click="goCreateReview(movie.id)"
-              >
-                리뷰 작성
-              </v-btn>
-            <div v-for="review in review_list" :key="review.id">
-              {{ review.title }}
-              {{ review.rank }}
-              <v-btn
-                text
-                @click="goReviewDetail(review.id)"
-              >
-                자세히보기
-              </v-btn>
-            </div>
-            </v-card-text>
+              icon
+              @click="goCreateReview(movie.id)"
+            >
+              <v-icon dark>
+                mdi-pencil
+              </v-icon>
+            </v-btn>
+          </v-toolbar>
+          <v-list three-line>
+            <template v-for="(review, index) in review_list">
+              <v-list-item :key="review.pk">
+                <v-list-item-content>
+                  <v-list-item-title v-text="review.title"></v-list-item-title>
+                  <v-list-item-rank v-text="review.rank"></v-list-item-rank>
+                </v-list-item-content>
+              </v-list-item>
+
+              <v-divider
+                v-if="review < reviews.length - 1"
+                :key="index"
+              ></v-divider>
+            </template>
+          </v-list>
+            
+
+
+
+          <!-- <div v-for="review in review_list" :key="review.id">
+            <span>{{ review.title }}</span>
+            <span>평점: {{ review.rank }}</span>
+            <v-btn
+              text
+              @click="goReviewDetail(review.id)"
+            >
+              자세히보기
+            </v-btn>
+          </div> -->
           <v-card-actions class="pt-0">
             <v-btn
               text
