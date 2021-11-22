@@ -3,6 +3,7 @@
     <v-app-bar
       app
       color="white"
+      elevation="0"
     >
       <v-spacer></v-spacer>
 
@@ -22,11 +23,13 @@
       <span v-if="isLogin">
         <v-btn text @click="moveToLink({ name: 'Password' })">Password</v-btn>
         <v-btn text @click.native="logout">Logout</v-btn>
+        <v-btn icon>
+          <v-icon>mdi-account</v-icon>
+        </v-btn>
       </span>
       <span v-else>
         <v-btn text @click="moveToLink({ name: 'Login' })">Login</v-btn>
         <v-btn text @click="moveToLink({ name: 'Signup' })">Signup</v-btn>
-        <v-btn text>Profile</v-btn>
       </span>
       <v-btn icon>
         <v-icon>mdi-magnify</v-icon>

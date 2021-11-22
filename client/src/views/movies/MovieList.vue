@@ -26,6 +26,7 @@
 
 <script>
 import MovieListItem from '@/components/MovieListItem.vue'
+
 import axios from 'axios'
 // import _ from 'lodash'
 

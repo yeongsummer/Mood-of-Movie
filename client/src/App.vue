@@ -1,8 +1,8 @@
 <template>
   <v-app>
     <navbar/>
-    <v-main>
-    <router-view/>
+    <v-main style="padding-top: 0px;">
+      <router-view/>
     </v-main>
   </v-app>
 </template>
@@ -20,5 +20,4 @@ export default {
 </script>
 
 <style>
-
 </style>
