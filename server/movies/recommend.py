@@ -47,14 +47,17 @@ from django.shortcuts import get_object_or_404
 #     movie_tags.to_csv('movie_tags.csv')
 
 
-def recommend(movie):
-    movie_tags = pd.read_csv('movie_tags.csv')
+def recommend(movie_title):
+    movie_tags = pd.read_csv('C:/Users/164045/Desktop/final-pjt/server/movies/movie_tags.csv',encoding='CP949')
     lv = TfidfVectorizer(max_features=5000, stop_words='english')
     vector = lv.fit_transform(movie_tags['tags']).toarray()
     similarity = cosine_similarity(vector)
-
-    index = movie_tags[movie_tags['title'] == movie].index[0]
-    distances = sorted(list(enumerate(similarity[index])),reverse=True,key = lambda x: x[1])
-    for i in distances[1:6]:
-        print(movie_tags.iloc[i[0]].title)
+    movie_title = movie_title.strip()
+    result = []
+    if not movie_tags[movie_tags['title'] == movie_title].empty:
+        index = movie_tags[movie_tags['title'] == movie_title].index[0]
+        distances = sorted(list(enumerate(similarity[index])),reverse=True,key = lambda x: x[1])
+        for i in distances[0:10]:
+            result.append(movie_tags.iloc[i[0]].title)
+    return result
     
