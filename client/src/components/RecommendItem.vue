@@ -1,39 +1,34 @@
 <template>
-  <v-col md="4">
+<div style="width: 100%;">
+  <v-card
+    class="ma-4"
+    width="14.5vw"
+    @click="[getMovieVideoKey(movie.id), dialog = true]"
+  >
     <div>
-      <span class="ranking">{{ index+1 }}</span>
-      <v-card 
-        class="mx-auto"
-        width="250"
-        @click="[getMovieVideoKey(movie.id), dialog = true]"
+      <v-img
+        :src="getImgUrl(movie.poster_path)"
+        :lazy-src="getImgUrl(movie.poster_path)"
+        style="height:22vw;"
       >
-      <div>
-        <v-img
-          :src="getImgUrl(movie.poster_path)"
-          :lazy-src="getImgUrl(movie.poster_path)"
-          height="380"
-        >
-          <template v-slot:placeholder>
-            <v-row class="fill-height ma-0" align="center" justify="center">
-              <v-progress-circular
-                indeterminate
-                color="grey lighten-5"
-              ></v-progress-circular>
-            </v-row>
-          </template>
-        </v-img>
-      </div>
-        <!-- <v-card-text class="fw-bold text-start text-nowrap overflow-hidden">
-          {{ movie.title }}
-        </v-card-text> -->
+        <template v-slot:placeholder>
+          <v-row class="fill-height ma-0" align="center" justify="center">
+            <v-progress-circular
+              indeterminate
+              color="grey lighten-5"
+            ></v-progress-circular>
+          </v-row>
+        </template>
+      </v-img>
+    </div>
+    <div>
       <v-btn icon :color="liked? 'pink':'grey'" @click.stop="movieLike(movie.id)">
         <v-icon>mdi-heart</v-icon>
       </v-btn>
-      <!-- <v-spacer></v-spacer> -->
       <span>{{ like_count }}</span>
-      </v-card>
     </div>
-    <v-dialog
+  </v-card>
+  <v-dialog
       v-model="dialog"
       width="700"
     >
@@ -68,21 +63,23 @@
           <v-btn
             text
             color="teal accent-4"
-            @click="goReview(movie.id, movie.title)"
+            @click="goReview(movie.id)"
           >
             리뷰보러가기
           </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
-  </v-col>
+  </div>
 </template>
 
 <script>
 import axios from 'axios'
-
 export default {
-  name: 'MovieListItem',
+  name: "RecommendItem",
+  props: {
+    movie:Object
+  },
   data: function() {
     return {
       dialog: false,
@@ -93,13 +90,6 @@ export default {
       like_count: 0,
       review_list: [],
     }
-  },
-  props: {
-    index:Number,
-    movie: {
-      type: Object,
-      required: true
-    },
   },
   computed: {
     thumbnailUrl() {
@@ -148,31 +138,13 @@ export default {
           console.log(err)
         })
     },
-    goReview(movie_pk, movie_title) {
-      this.$router.push({ name: "ReviewList", params: { movie_pk: movie_pk, movie_title: movie_title }} )
+    goReview(movie_pk) {
+      this.$router.push({ name: "ReviewList", params: { movie_pk: movie_pk }} )
     },
-  },
-  created() {
-    axios({
-      method: 'get',
-      url: `http://127.0.0.1:8000/movies/movie_like/${this.movie.id}/`,
-      headers: this.setToken()
-      })
-      .then(res => {
-        console.log(res)
-        this.like_count = res.data.like_count
-        this.liked = res.data.liked
-      })
-      .catch(err => {
-        console.log(err)
-      })
   },
 }
 </script>
 
-<style scoped>
-.ranking {
-  font-size: 3rem;
-  font-weight: 700;
-}
+<style>
+
 </style>

@@ -13,6 +13,8 @@ export default new Vuex.Store({
     userPk: null,
     comments: [],
     config: null,
+    movie_list: [],
+    recommend_movie_list:[],
     followers: [],
     followings: [],
   },
@@ -22,8 +24,26 @@ export default new Vuex.Store({
     CREATE_COMMENT: function (state, commentItem) {
       state.comments.unshift(commentItem)
     },
+    DELETE_COMMENT: function (state, commentItem) {
+      const index = state.comments.indexOf(commentItem)
+      state.comments.splice(index, 1)
+    },
     GET_COMMENTS: function (state, comments) {
-      state.comments = comments
+      state.comments = []
+      comments.forEach(function(comment){
+        const commentItem = {
+          id: comment.id,
+          content: comment.content,
+          nickname: comment.user.nickname
+        }
+        state.comments.unshift(commentItem)
+      })
+    },
+    GET_MOVIES: function (state, movies) {
+      state.movie_list = movies
+    },
+    GET_RECOMMEND_MOVIES: function (state, movies) {
+      state.recommend_movie_list = movies
     },
     ISLOGIN: function (state, status) {
       state.isLogin = status
@@ -51,8 +71,14 @@ export default new Vuex.Store({
     createComments({ commit }, commentItem) {
       commit('CREATE_COMMENT', commentItem)
     },
+    deleteComments({ commit }, commentItem) {
+      commit('DELETE_COMMENT', commentItem)
+    },
     getComments({ commit }, comments) {
       commit('GET_COMMENTS', comments)
+    },
+    getRecommendMovies({ commit }, movies) {
+      commit('GET_RECOMMEND_MOVIES', movies)
     },
     login: function ({ state, commit }, credentials) {
       axios({
@@ -90,6 +116,34 @@ export default new Vuex.Store({
         console.log(err)
         alert('로그인 실패 : 로그인 정보를 확인해주세요.')
       })
+
+
+      axios({
+        method: 'get',
+        url: `http://127.0.0.1:8000/movies/all_movie/`,
+        })
+        .then(res => {
+          commit('GET_MOVIES', res.data.movie_titles)
+        })
+        .catch(err => {
+          console.log(err)
+        })
+
+        const default_movie = ['소울', '러브 액츄얼리', '캡틴 마블', '모아나', '텍사스 전기톱 연쇄살인사건']
+        let recommendMovie = []
+        default_movie.forEach((movie_pk) => {
+          axios({
+            method: 'get',
+            url: `http://127.0.0.1:8000/movies/movie_recommend/${movie_pk}/`
+            })
+            .then(res => {
+              recommendMovie.push(res.data)
+            })
+            .catch(err => {
+              console.log(err)
+            })
+          })
+      commit('GET_RECOMMEND_MOVIES', recommendMovie)
     },
     logout: function ({ commit }) {
       commit('ISLOGIN', false)

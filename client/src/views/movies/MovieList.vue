@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container style="width: 80vw">
     <div id='nav'>
       <span>
         <router-link :to="{ name: 'MovieList' }" class="text-btn">Ranking </router-link> | 
@@ -7,17 +7,18 @@
         <router-link :to="{ name: 'ReviewList' }" class="text-btn"> Review</router-link>
       </span>
     </div>
-    <div class="background" :style="{'background-image': 'url('+require('@/assets/main_image.jpg')+')'}">
+    <div class="background" :style="{'background-image': 'url('+require('@/assets/main_image.jpg')+')','width':'100%'}">
       <div class="main_text">
         <p>지금 나에게 맞는 영화를 찾고,</p>
         <p>나만의 영화 경험을 공유하세요.</p>
       </div>
     </div>
     <h1 class="text-center" style="margin: 20px;">TOP 20</h1>
-    <v-row no-gutters class="justify-center background" :style="{'background-image': 'url('+require('@/assets/list_cover.png')+')'}">
+    <v-row no-gutters class="justify-center background" :style="{'background-image': 'url('+require('@/assets/list_cover.png')+')','width':'100%'}">
       <movie-list-item 
-        v-for="movie in movies" 
-        :key="movie.id"
+        v-for="(movie,index) in movies" 
+        :key="index"
+        :index="index"
         :movie="movie"
       >
       </movie-list-item>
@@ -79,7 +80,7 @@ export default {
 
 #nav a.router-link-exact-active {
   font-size: 30px;
-  color: #42b983;
+  color:#66BB6A
 }
 
 .background {
