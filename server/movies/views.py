@@ -9,7 +9,8 @@ from .serializers import (
     ReviewlistSerializer,
     ReviewSerializer, 
     CommentlistSerializer,
-    CommentSerializer
+    CommentSerializer,
+    AllMovielistSerializer
     )
 from rest_framework.response import Response
 from rest_framework import status
@@ -23,6 +24,20 @@ from .recommend import recommend
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def movie_list(request):
+    movie_titles = []
+    if request.method == 'GET':
+        movies = Movie.objects.all().values('title')
+        for movie in movies:
+            movie_titles.append(movie['title'])
+        context = {
+            'movie_titles': movie_titles
+        }
+        return Response(context, status=status.HTTP_200_OK)
+
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def popular_movie_list(request):
     if request.method == 'GET':
         movies = movie_ranking()
         serializers = MovielistSerializer(movies, many=True)
@@ -82,13 +97,11 @@ def movie_ranking():
 def review_list_create(request, movie_pk):
     if request.method == 'GET':
         reviews = Review.objects.filter(movie_id=movie_pk)
-        print(reviews)
         serializers = ReviewlistSerializer(reviews, many=True)
         return Response(serializers.data)
 
     elif request.method == 'POST':
         movie = get_object_or_404(Movie, pk=movie_pk)
-        print(movie)
         serializer = ReviewSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
             serializer.save(user=request.user, movie=movie)
@@ -104,22 +117,29 @@ def review_detail_update_delete(request, review_pk):
 
     elif not request.user.review_set.filter(pk=review_pk).exists():
         return Response({'detail':'권한이 없습니다.'}, status=status.HTTP_403_FORBIDDEN)
-
-    serializer = ReviewSerializer(review, data=request.data)
-    if serializer.is_valid(raise_exception=True):
-        serializer.save()
-        return Response(serializer.data)
+    
+    if request.method == 'PUT':
+        serializer = ReviewSerializer(review, data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return Response(serializer.data)
 
     elif request.method == 'DELETE':
         review.delete()
         return Response({ 'id': review_pk }, status=status.HTTP_204_NO_CONTENT)
+
+@api_view(['GET'])
+def review_search(request, search):
+    reviews = Review.objects.filter(movie_id__title__icontains=search)
+    print(reviews)
+    serializers = ReviewlistSerializer(reviews, many=True)
+    return Response(serializers.data)
 
 
 @api_view(['GET', 'POST'])
 def comment_list_create(request, review_pk):
     if request.method == 'GET':
         comments = Comment.objects.filter(review_id=review_pk)
-        print('함수실행')
         serializers = CommentlistSerializer(comments, many=True)
         return Response(serializers.data)
 
@@ -132,8 +152,8 @@ def comment_list_create(request, review_pk):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
-@api_view(['GET', 'PUT', 'DELETE'])
-def comment_detail_update_delete(request, comment_pk):
+@api_view(['GET', 'DELETE'])
+def comment_detail_delete(request, comment_pk):
     comment = get_object_or_404(Comment, pk=comment_pk)
     if request.method == 'GET':
         serializer = CommentSerializer(comment)
@@ -142,44 +162,51 @@ def comment_detail_update_delete(request, comment_pk):
     elif not request.user.comment_set.filter(pk=comment_pk).exists():
         return Response({'detail':'권한이 없습니다.'}, status=status.HTTP_403_FORBIDDEN)
 
-    serializer = CommentSerializer(comment, data=request.data)
-    if serializer.is_valid(raise_exception=True):
-        serializer.save()
-        return Response(serializer.data)
-
     elif request.method == 'DELETE':
         comment.delete()
         return Response({ 'id': comment_pk }, status=status.HTTP_204_NO_CONTENT)
 
 
-@api_view(['POST'])
+@api_view(['GET', 'POST'])
 def movie_like(request, movie_pk):
     movie = get_object_or_404(Movie, pk=movie_pk)
-    if movie.like_user.filter(pk=request.user.pk).exists():
-        movie.like_user.remove(request.user)
-        liked = False
-    else:
-        movie.like_user.add(request.user)
-        liked = True
+    if request.method == 'GET':
+        if movie.like_users.filter(pk=request.user.pk).exists():
+            liked = True
+        else:
+            liked = False
+    elif request.method == 'POST':
+        if movie.like_users.filter(pk=request.user.pk).exists():
+            movie.like_users.remove(request.user)
+            liked = False
+        else:
+            movie.like_users.add(request.user)
+            liked = True
     context = {
         'liked': liked,
-        'like_count': movie.like_user.count(),
+        'like_count': movie.like_users.count(),
     }
     return Response(context, status=status.HTTP_200_OK)
 
 
-@api_view(['POST'])
+@api_view(['GET', 'POST'])
 def review_like(request, review_pk):
     review = get_object_or_404(Review, pk=review_pk)
-    if review.like_user.filter(pk=request.user.pk).exists():
-        review.like_user.remove(request.user)
-        liked = False
-    else:
-        review.like_user.add(request.user)
-        liked = True
+    if request.method == 'GET':
+        if review.like_users.filter(pk=request.user.pk).exists():
+            liked = True
+        else:
+            liked = False
+    elif request.method == 'POST':
+        if review.like_users.filter(pk=request.user.pk).exists():
+            review.like_users.remove(request.user)
+            liked = False
+        else:
+            review.like_users.add(request.user)
+            liked = True
     context = {
         'liked':liked,
-        'like_count':review.like_user.count(),
+        'like_count':review.like_users.count(),
     }
     return Response(context, status=status.HTTP_200_OK)
 
@@ -187,8 +214,14 @@ def review_like(request, review_pk):
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def movie_recommend(request, movie_title):
-    recommended_movie = recommend(movie_title)
-    print(recommended_movie)
+    print(movie_title)
+    movie_list = recommend(movie_title)
+    if movie_list:
+        movies = []
+        for movie_title in movie_list:
+            movies.append(Movie.objects.filter(title=movie_title)[0])
+        serializers = MovielistSerializer(movies, many=True)
+        return Response(serializers.data, status=status.HTTP_200_OK)
 
 
 # @api_view(['POST'])
