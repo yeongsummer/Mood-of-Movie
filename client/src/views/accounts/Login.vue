@@ -39,7 +39,7 @@
             <v-btn
               class="ma-2 white--text"
               color="green lighten-3"
-              @click="login"
+              @click="login(credentials)"
             >
               로그인
             </v-btn>
@@ -51,7 +51,8 @@
 </template>
 
 <script>
-import axios from 'axios'
+import { mapActions } from 'vuex'
+
 export default {
   name: 'Login',
   data: function () {
@@ -67,22 +68,11 @@ export default {
     }
   },
   methods: {
-    login: function () {
-      axios({
-        method: 'post',
-        url: 'http://127.0.0.1:8000/accounts/api-token-auth/',
-        data: this.credentials,
-      })
-      .then(res => {
-        localStorage.setItem('jwt', res.data.token)
-        this.$store.dispatch('isLogin', this.credentials.email)
-        this.$router.push({ name: 'MovieList' })
-      })
-      .catch(err => {
-        console.log(err)
-      })
-    },
-  }
+    ...mapActions([
+      'login',
+    ])
+  },
+
 }
 </script>
 

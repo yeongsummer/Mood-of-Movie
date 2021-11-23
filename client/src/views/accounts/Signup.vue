@@ -135,7 +135,7 @@ export default {
         this.$router.push({ name: 'Login'})
       })
       .catch(err => {
-        // alert('회원가입 실패 : 회원 정보를 확인해주세요.')
+        alert('회원가입 실패 : 회원 정보를 확인해주세요.')
         alert(err)
         console.log(err)
       })

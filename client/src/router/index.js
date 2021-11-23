@@ -3,6 +3,7 @@ import VueRouter from 'vue-router'
 import Signup from '../views/accounts/Signup.vue'
 import Login from '../views/accounts/Login.vue'
 import Password from '../views/accounts/Password.vue'
+import Profile from '../views/accounts/Profile.vue'
 import MovieList from '../views/movies/MovieList.vue'
 import MovieRecommend from '../views/movies/MovieRecommend.vue'
 import ReviewList from '../views/movies/ReviewList.vue'
@@ -27,6 +28,11 @@ const routes = [
     path: '/accounts/password',
     name: 'Password',
     component: Password,
+  },
+  {
+    path: '/accounts/profile',
+    name: 'Profile',
+    component: Profile,
   },
   {
     path: '/movies',
