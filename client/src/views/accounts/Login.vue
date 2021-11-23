@@ -52,6 +52,7 @@
 
 <script>
 import axios from 'axios'
+
 export default {
   name: 'Login',
   data: function () {
@@ -67,6 +68,17 @@ export default {
     }
   },
   methods: {
+    // userid가 필요한지?
+    // setToken: function () {
+    //   const token = localStorage.getItem('jwt')
+    //   const config = {
+    //     headers: {
+    //       Authorization: `JWT ${token}`
+    //     }
+    //   }
+    //   return config
+    // },
+
     login: function () {
       axios({
         method: 'post',
@@ -76,13 +88,29 @@ export default {
       .then(res => {
         localStorage.setItem('jwt', res.data.token)
         this.$emit('login')
+        this.$store.state.isLogin = true
+        this.$store.state.username = this.credentials.username
+
+        // const config = this.setToken()
+        // axios.get('http://127.0.0.1:8000/accounts/user/', config)
+        //   .then((res) => {
+        //     console.log(res)
+        //     console.log(res.data)
+        //     const id = res.data
+        //     this.$store.state.login_user = id
+        //   })
+        //   .catch((err) => {
+        //     console.log(err)
+        //   })
+
         this.$router.push({ name: 'MovieList' })
       })
       .catch(err => {
         console.log(err)
+        alert('로그인 실패 : 로그인 정보를 확인해주세요.')
       })
     },
-  }
+  },
 }
 </script>
 

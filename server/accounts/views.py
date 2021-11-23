@@ -6,7 +6,9 @@ from rest_framework.response import Response
 from .serializers import UserSerializer
 from django.contrib.auth import get_user_model
 from django.http import HttpResponse
-
+from rest_framework.decorators import authentication_classes, permission_classes
+from rest_framework.permissions import IsAuthenticated
+from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 # Create your views here.
 
 @api_view(['POST'])
@@ -61,3 +63,10 @@ def follow(request, user_pk):
         else:
             user.followers.add(request.user)
     return HttpResponse(status=200)
+
+
+@api_view(['GET'])
+@authentication_classes([JSONWebTokenAuthentication])
+@permission_classes([IsAuthenticated])
+def get_user(request):
+    return Response(request.user.id)

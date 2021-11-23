@@ -86,12 +86,11 @@ export default {
         value => (value || "").length >= 6 & (value || "").length <= 15 || '비밀번호는 6~15글자이어야 합니다.',
         value => /[0-9]/.test(value) || '비밀번호는 숫자를 포함해야 합니다.',
         value => /[a-z]/.test(value) || '비밀번호는 영어를 포함해야 합니다.',
-        value => /[`~!@@#$%^&*|₩₩₩'₩";:₩/?]/.test(value) || '비밀번호는 특수문자를 포함해야 합니다.'
       ],
     };
   },
   methods: {
-    ...mapActions("accounts", ["changepassword"])
+    ...mapActions(["changepassword"])
   }
 };
 </script>

@@ -17,13 +17,11 @@
           width="40"
         />
       </div>
-
       <v-spacer></v-spacer>
 
       <span v-if="isLogin">
-        <v-btn text @click="moveToLink({ name: 'Password' })">Password</v-btn>
         <v-btn text @click.native="logout">Logout</v-btn>
-        <v-btn icon>
+        <v-btn icon @click="moveToLink({ name: 'Profile' })">
           <v-icon>mdi-account</v-icon>
         </v-btn>
       </span>
@@ -43,31 +41,36 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 import { mapActions } from 'vuex'
 
 export default {
   name: 'Navbar',
   data: function () {
     return {
-      isLogin: false,
     }
   },
   methods: {
     ...mapActions(['moveToLink']),
 
     logout: function () {
-      this.isLogin = false,
+      this.$store.state.isLogin = false,
       localStorage.removeItem('jwt')
       this.$router.push({ name: 'Login' })
     }
   },
-  created: function () {
-    const token = localStorage.getItem('jwt')
+  computed: {
+    ...mapState([
+      'isLogin'
+    ])
+  },
+  // created: function () {
+  //   const token = localStorage.getItem('jwt')
     
-    if (token) {
-      this.isLogin = true
-    }
-  }
+  //   if (token) {
+  //     this.isLogin = true
+  //   }
+  // }
 }
 </script>
 
