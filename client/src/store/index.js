@@ -15,6 +15,8 @@ export default new Vuex.Store({
     config: null,
     movie_list: [],
     recommend_movie_list:[],
+    followers: [],
+    followings: [],
   },
   getters: {
   },
@@ -53,6 +55,13 @@ export default new Vuex.Store({
       state.userPk = data.id
       state.nickname = data.nickname
     },
+    UPDATEFOLLOW: function (state, data) {
+      state.followers = data.followers
+      state.followings = data.followings
+    },
+    ADDFOLLOW: function (state, user) {
+      state.followers.append(user)
+    }
   },
   actions: {
     moveToLink({ state }, routeObject) {
@@ -89,12 +98,12 @@ export default new Vuex.Store({
         }
         commit('CONFIG', config)
 
-        axios.get('http://127.0.0.1:8000/accounts/user/', state.config)
+        axios.get(`http://127.0.0.1:8000/accounts/${ state.nickname }/user/`, state.config)
           .then((res) => {
-            console.log(res.data)
+            // console.log(res.data)
             const id = res.data.id
             const nickname = res.data.nickname
-            console.log(nickname)
+            // console.log(nickname)
             commit('USERINFO', {'id': id, 'nickname': nickname})
           })
           .catch((err) => {
@@ -136,10 +145,11 @@ export default new Vuex.Store({
           })
       commit('GET_RECOMMEND_MOVIES', recommendMovie)
     },
-    logout: function ({commit}) {
+    logout: function ({ commit }) {
       commit('ISLOGIN', false)
+      commit('USERINFO', {'id': '', 'nickname': ''})
       localStorage.removeItem('jwt')
-      this.$router.push({ name: 'Login' })
+      router.push({ name: 'Login' })
     },
     changepassword({ state }, changepasswordData) {
       const token = localStorage.getItem('jwt')
@@ -154,6 +164,38 @@ export default new Vuex.Store({
           router.push({ name: 'Profile'})
         })
         .catch(err => console.error(err))
+    },
+    get_follow: function ({ state, commit }, nickname) {
+      axios.get(`http://127.0.0.1:8000/accounts/${ nickname }/get_follow/`, state.config)
+        .then((res) => {
+          // console.log(res.data)
+          const followers = res.data.followers
+          const followings = res.data.followings
+          commit('UPDATEFOLLOW', {'followers': followers, 'followings': followings})
+        })
+        .catch((err) => {
+          console.log(err)
+        })
+    },
+    follow: function ({ state, commit }, nickname) {
+      let userId = -1
+      axios.get(`http://127.0.0.1:8000/accounts/${ nickname }/user/`, state.config)
+        .then((res) => {
+          userId = res.data.id
+        })
+        .catch((err) => {
+          console.log(err)
+        })
+      
+      axios.post(`http://127.0.0.1:8000/accounts/${ userId }/follow/`, null, state.config)
+      .then(res => {
+        res
+        // 여기를 닉네임으로? 객체로?
+        commit('ADDFOLLOW', state.nickname)
+      })
+      .catch(err => {
+        console.log(err)
+      })
     },
   },
   plugins: [

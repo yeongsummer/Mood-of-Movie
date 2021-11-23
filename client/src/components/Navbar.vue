@@ -21,7 +21,8 @@
 
       <span v-if="isLogin">
         <v-btn text @click="logout()">Logout</v-btn>
-        <v-btn icon @click="moveToLink({ name: 'Profile' })">
+        <!-- 여기에 닉네임 넣는 방법!!! -->
+        <v-btn icon @click="moveToLink({ name: 'Profile', params: {nickname: 'aa'} })">
           <v-icon>mdi-account</v-icon>
         </v-btn>
       </span>
