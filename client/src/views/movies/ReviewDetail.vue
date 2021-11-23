@@ -8,7 +8,7 @@
         <div class="media" style="width: 100%; word-break:break-all;">
           <div class="media-body text-justify">
             <h2 class="mt-0">제목: {{review.title}}</h2>
-            <p>작성자: {{reviewUsername}}</p>
+            <p>작성자 : {{reviewUsername}}</p>
             <p>영화: {{movie}}</p>
             <p>작성: {{ review.created_at | moment('YYYY-MM-DD hh:mm') }} | 최근수정:
               {{ review.updated_at | moment('YYYY-MM-DD hh:mm') }} </p>
@@ -19,11 +19,11 @@
               <!--작성자와 접속자가 같다면, 수정/삭제 버튼 활성화-->
               <!--단, 관리자의 경우 삭제 버튼 활성화 -->
               <button class="btn btn-warning font-do mr-3 font-1-2em"
-                v-if="reviewUsername === this.$store.state.username">글 수정</button>
+                v-if="reviewUsername === this.$store.state.nickname">글 수정</button>
 
               <button class="btn btn-danger font-do mr-3 font-1-2em" v-if="this.$store.state.is_admin"
                 @click="deletereview(review)">글 삭제</button>
-              <button v-else-if="reviewUsername === this.$store.state.username" class="btn btn-danger font-do mr-3 font-1-2em">글 삭제</button>
+              <button v-else-if="reviewUsername === this.$store.state.nickname" class="btn btn-danger font-do mr-3 font-1-2em">글 삭제</button>
             </div>
             <div class="mt-5">
               <CommentForm :review="review"/>
@@ -118,6 +118,7 @@
     },
     created: function () {
       this.review_pk = this.$route.params.review_pk
+
       axios({
         method: 'get',
         url: `http://127.0.0.1:8000/movies/review/${this.review_pk}/`,
@@ -126,7 +127,8 @@
         .then(res => {
           this.review = res.data
           console.log(this.review)
-          this.reviewUsername = this.review.user.username
+          this.reviewUsername = this.review.user.nickname
+          console.log(this.reviewUsername)
           this.movie = this.review.movie.title
         })
         .catch(err => {

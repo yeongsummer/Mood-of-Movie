@@ -6,7 +6,7 @@ from django.contrib.auth import get_user_model
 class UserInfoSerializer(serializers.ModelSerializer):
     class Meta:
         model = get_user_model()
-        fields = ('id', 'username')
+        fields = ('id', 'nickname')
 
 
 class MovielistSerializer(serializers.ModelSerializer):
@@ -59,6 +59,6 @@ class CommentSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Comment
-        fields = ('id','content')
+        fields = ('id','content','user')
 
 
