@@ -5,9 +5,6 @@
       color="white"
       elevation="0"
     >
-      1: {{ isLogin }}
-      2: {{ nickname }}
-      3: {{ userPk }}
       <v-spacer></v-spacer>
 
       <div class="d-flex align-center">

@@ -22,12 +22,18 @@
 
 <script>
   import axios from 'axios'
+  import { mapState } from 'vuex'
   export default {
     name: 'CommentForm',
     data: function () {
       return {
         content: '',
       }
+    },
+    computed: {
+    ...mapState([
+      'nickname',
+      ])
     },
     props: {
       review: {
@@ -43,6 +49,7 @@
         return config
       },
       createComment: function () {
+
         const commentItem = {
           content: this.content
         }
@@ -55,7 +62,12 @@
         })
           .then(res => {
             console.log(res.data)
-            this.$store.dispatch('createComments', res.data) 
+            const commentItem = {
+              id: res.data.id,
+              nickname: this.nickname,
+              content: this.content
+            }
+            this.$store.dispatch('createComments', commentItem) 
             this.content = ''
           })
           .catch(err => {

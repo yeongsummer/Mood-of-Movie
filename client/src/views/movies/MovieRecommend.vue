@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container style="width: 80vw">
     <div id="nav">
       <span>
         <router-link :to="{ name: 'MovieList' }" class="text-btn">Ranking </router-link> | 
@@ -7,58 +7,156 @@
         <router-link :to="{ name: 'ReviewList' }" class="text-btn"> Review</router-link>
       </span>
     </div>
-    <h1 class="text-center" style="margin-bottom: 20px;">TOP 20</h1>
-    <v-row no-gutters class="justify-center">
-      <movie-list-item 
-        v-for="movie in recommended_movies" 
-        :key="movie.id"
-        :movie="movie"
-      >
-      </movie-list-item>
-    </v-row>
+    <!-- <h1 class="text-center" style="margin-bottom: 20px;">영화 추천</h1> -->
+    <h1 class="maintitle">{{nickname}}님을 위한 추천 영화 🎁</h1>
+    <v-autocomplete
+      v-model="select"
+      :loading="loading"
+      :items="items"
+      :search-input.sync="search"
+      cache-items
+      class="mx-5 my-5 "
+      flat
+      hide-no-data
+      hide-details
+      color='green darken-1'
+      label="인생 영화 제목을 입력하면 그와 유사한 영화를 추천해드립니다 :)"
+      @keypress.enter="[flag=true, getRecommendedMovies(search)]"
+    ></v-autocomplete>
+    <recommend-List
+      v-if="flag"
+      :movieList="recommended_movies"
+    />
+    <div class="subtitle">
+      <h1>나를 힐링시켜줄 음악 영화 🎵</h1>
+    </div>
+    <recommend-List
+      :movieList="recommend_movie_list[0]"
+    />
+    <div class="subtitle">
+      <h1>다가오는 크리스마스는 영화보면서 방콕 어때요? 🏡</h1>
+    </div>
+    <recommend-List
+      :movieList="recommend_movie_list[1]"
+    />
+    <div class="subtitle">
+      <h1>시원한 액션보면서 스트레스를 날리자 👊</h1>
+    </div>
+    <recommend-List
+      :movieList="recommend_movie_list[2]"
+    />
+    <div class="subtitle">
+      <h1>겨울이지만 바다는 보고싶어 🌊</h1>
+    </div>
+    <recommend-List
+      :movieList="recommend_movie_list[3]"
+    />
+    <div class="subtitle">
+      <h1>숨막히는 긴장감을 느껴봐 😱</h1>
+    </div>
+    <recommend-List
+      :movieList="recommend_movie_list[4]"
+    />
+    
   </v-container>
 </template>
 
 <script>
-import MovieListItem from '@/components/MovieListItem.vue'
+import RecommendList from '@/components/RecommendList.vue'
 import axios from 'axios'
+import { mapState } from 'vuex'
 
 export default {
   name: 'MovieRecommend',
   components: {
-    MovieListItem,
+    RecommendList
   },
-    data: function () {
-      return {
-        movie_title: '',
-        recommended_movies: {
-          type: Array,
-          required: true
-        }
-      }
+  data: function () {
+    return {
+      movie_title: '',
+      recommended_movies: [],
+      flag: false,
+
+      loading: false,
+      items: [],
+      search: null,
+      select: null,
+    }
+  },
+  computed: {
+    ...mapState([
+      'nickname',
+      'recommend_movie_list',
+      'movie_list'
+    ])
+  },
+  watch: {
+    search (val) {
+      val && val !== this.select && this.querySelections(val)
+    },
   },
   methods: {
+    setToken: function () {
+        const token = localStorage.getItem('jwt')
+        const config = {
+          Authorization: `JWT ${token}`
+        }
+        return config
+    },
     getRecommendedMovies: function (movie_title) {
+      console.log(movie_title)
       axios({
         method: 'get',
-        url: 'http://127.0.0.1:8000/movies/movie_recommend',
-        params: movie_title,
+        url: `http://127.0.0.1:8000/movies/movie_recommend/${movie_title}/`
         })
         .then(res => {
           console.log(res)
-          this.movies = res.data
+          this.recommended_movies = res.data
         })
         .catch(err => {
           console.log(err)
         })
     },
+    querySelections (v) {
+      this.loading = true
+      // Simulated ajax query
+      setTimeout(() => {
+        this.items = this.movie_list.filter(e => {
+          return (e || '').toLowerCase().indexOf((v || '').toLowerCase()) > -1
+        })
+        this.loading = false
+      }, 500)
+    },
   },
-  created: function () {
-    this.getRecommendedMovies(this.movie_title)
+  created() {
+    console.log(this.recommend_movie_list.length)
+    if (this.recommend_movie_list.length == 0) {
+        const default_movie = ['소울', '러브 액츄얼리', '캡틴 마블', '모아나', '텍사스 전기톱 연쇄살인사건']
+        let recommendMovie = []
+        default_movie.forEach((movie_pk) => {
+          axios({
+            method: 'get',
+            url: `http://127.0.0.1:8000/movies/movie_recommend/${movie_pk}/`
+            })
+            .then(res => {
+              recommendMovie.push(res.data)
+            })
+            .catch(err => {
+              console.log(err)
+            })
+          })
+      this.$store.dispatch('GET_RECOMMEND_MOVIES', recommendMovie)
+    }
   }
 }
 </script>
 
-<style>
-
+<style scoped>
+  .maintitle {
+    margin-top: 5%;
+  }
+  .subtitle {
+    margin-top: 15%;
+    margin-bottom: 2%;
+  }
 </style>

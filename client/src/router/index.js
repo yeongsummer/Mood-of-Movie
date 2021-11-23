@@ -9,6 +9,7 @@ import MovieRecommend from '../views/movies/MovieRecommend.vue'
 import ReviewList from '../views/movies/ReviewList.vue'
 import CreateReview from '../views/movies/CreateReview.vue'
 import ReviewDetail from '../views/movies/ReviewDetail.vue'
+import UpdateReview from '../views/movies/UpdateReview.vue'
 
 
 Vue.use(VueRouter)
@@ -58,6 +59,11 @@ const routes = [
     path: '/movies/reviewdetail',
     name: 'ReviewDetail',
     component: ReviewDetail,
+  },
+  {
+    path: '/movies/updatereview',
+    name: 'UpdateReview',
+    component: UpdateReview,
   },
 
 ]

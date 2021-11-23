@@ -12,18 +12,35 @@
             <p>영화: {{movie}}</p>
             <p>작성: {{ review.created_at | moment('YYYY-MM-DD hh:mm') }} | 최근수정:
               {{ review.updated_at | moment('YYYY-MM-DD hh:mm') }} </p>
+            <v-rating
+              color="yellow darken-3"
+              background-color="grey darken-1"
+              empty-icon="$ratingFull"
+              half-increments
+              readonly
+              hover
+              size="15"
+              :value="review.rank/2"
+            ></v-rating>
             <p class="font-2em">
               {{review.content}}
             </p>
-            <p>store:{{email}}</p>
-            <p>{{reviewerEmail}}</p>
-            <div class="d-flex justify-content-end">
-              <button class="btn btn-warning font-do mr-3 font-1-2em"
-                v-if="reviewerEmail === email">글 수정</button>
+            <v-btn icon :color="liked? 'pink':'grey'" @click.stop="reviewLike(review.id)">
+              <v-icon>mdi-heart</v-icon>
+            </v-btn>
+            <span>{{ like_count }}</span>
 
-              <button class="btn btn-danger font-do mr-3 font-1-2em" v-if="this.$store.state.is_admin"
-                @click="deletereview(review)">글 삭제</button>
-              <button v-else-if="reviewerEmail === this.$store.state.email" class="btn btn-danger font-do mr-3 font-1-2em">글 삭제</button>
+            <div class="d-flex justify-content-end">
+              <v-btn depressed v-if="reviewUsername === nickname" @click="updateReview(review)">
+                수정
+              </v-btn>
+              <v-btn depressed v-if="reviewUsername === nickname" @click="deleteReview(review)">
+                삭제
+              </v-btn>
+              <v-btn depressed v-if="reviewUsername === nickname" @click="backToReviewList">
+                뒤로가기
+              </v-btn>
+
             </div>
             <div class="mt-5">
               <CommentForm :review="review"/>
@@ -57,15 +74,18 @@
         review_pk: '',
         review: '',
         movie: '',
+        movie_pk:'',
         reviewUsername: '',
         reviewerEmail: '',
         reviewItem: '',
         commentList: [],
+        liked: false,
+        like_count: 0,
       }
     },
     computed: {
     ...mapState([
-      'email',
+      'nickname',
     ])
   },
     methods: {
@@ -92,11 +112,9 @@
           console.log(err)
         })
       },
-  //     backToreview: function () {
-  //       this.$router.push({
-  //         name: 'review'
-  //       })
-  //     },
+      backToReviewList: function () {
+        this.$router.push({name: 'ReviewList', params: {movie_pk: this.movie_pk}})
+      },
       deleteReview: function () {
         axios({
           method: 'delete',
@@ -105,22 +123,38 @@
           })
           .then(res => {
             console.log(res)
-            this.$router.push({name: 'ReviewList'})
+            this.$router.push({name: 'ReviewList', params: {movie_pk: this.movie_pk}})
           })
           .catch((err) => {
             console.log(err)
           })
       },
-      updateReviewForm: function (review) {
+      updateReview: function (review) {
         const reviewItem = {
-          id: review.id,
-          purpose: 'update',
+          review_pk: review.id,
           title: review.title,
+          rank: review.rank,
           content: review.content,
           movie: this.movie
         }
-        this.$router.push({name: 'CreateReview', params: reviewItem})
+        this.$router.push({name: 'UpdateReview', params: reviewItem})
         //console.log(review.id)
+      },
+      reviewLike: function (review_pk) {
+        this.liked = !this.liked
+        axios({
+          method: 'post',
+          url: `http://127.0.0.1:8000/movies/review_like/${review_pk}/`,
+          headers: this.setToken()
+          })
+          .then(res => {
+            console.log(res)
+            this.like_count = res.data.like_count
+            console.log(this.like_count)
+          })
+          .catch(err => {
+            console.log(err)
+          })
       },
     },
     created: function () {
@@ -139,11 +173,26 @@
           this.reviewUsername = this.review.user.nickname
           this.reviewerEmail = this.review.user.email
           this.movie = this.review.movie.title
+          this.movie_pk = this. review.movie.id
         })
         .catch(err => {
           console.log(err)
         })
       this.getComments()
+
+      axios({
+        method: 'get',
+        url: `http://127.0.0.1:8000/movies/review_like/${this.review.id}/`,
+        headers: this.setToken()
+        })
+        .then(res => {
+          console.log(res)
+          this.like_count = res.data.like_count
+          this.liked = res.data.liked
+        })
+        .catch(err => {
+          console.log(err)
+        })
     },
     mounted() {
       window.scrollTo(0,0)
