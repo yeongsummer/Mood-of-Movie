@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1>{{ username }}님의 마이페이지</h1>
+    <h1>{{ nickname }}님의 마이페이지</h1>
     <v-btn text @click="moveToLink({ name: 'Password' })">Password</v-btn>
   </div>
 </template>
@@ -16,7 +16,7 @@ export default {
   },
   computed: {
     ...mapState([
-      'username'
+      'nickname'
     ])
   },
 }

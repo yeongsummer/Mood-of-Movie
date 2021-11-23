@@ -69,4 +69,4 @@ def follow(request, user_pk):
 @authentication_classes([JSONWebTokenAuthentication])
 @permission_classes([IsAuthenticated])
 def get_user(request):
-    return Response(request.user.id)
+    return Response({ 'id': request.user.id, 'nickname': request.user.nickname })

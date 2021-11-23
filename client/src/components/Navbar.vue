@@ -5,6 +5,9 @@
       color="white"
       elevation="0"
     >
+      1: {{ isLogin }}
+      2: {{ nickname }}
+      3: {{ userPk }}
       <v-spacer></v-spacer>
 
       <div class="d-flex align-center">
@@ -20,7 +23,7 @@
       <v-spacer></v-spacer>
 
       <span v-if="isLogin">
-        <v-btn text @click.native="logout">Logout</v-btn>
+        <v-btn text @click="logout()">Logout</v-btn>
         <v-btn icon @click="moveToLink({ name: 'Profile' })">
           <v-icon>mdi-account</v-icon>
         </v-btn>
@@ -51,26 +54,18 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['moveToLink']),
-
-    logout: function () {
-      this.$store.state.isLogin = false,
-      localStorage.removeItem('jwt')
-      this.$router.push({ name: 'Login' })
-    }
+    ...mapActions([
+      'moveToLink',
+      'logout'
+    ]),
   },
   computed: {
     ...mapState([
-      'isLogin'
+      'isLogin',
+      'nickname',
+      'userPk',
     ])
   },
-  // created: function () {
-  //   const token = localStorage.getItem('jwt')
-    
-  //   if (token) {
-  //     this.isLogin = true
-  //   }
-  // }
 }
 </script>
 

@@ -39,7 +39,7 @@
             <v-btn
               class="ma-2 white--text"
               color="green lighten-3"
-              @click="login"
+              @click="login(credentials)"
             >
               로그인
             </v-btn>
@@ -51,7 +51,7 @@
 </template>
 
 <script>
-import axios from 'axios'
+import { mapActions } from 'vuex'
 
 export default {
   name: 'Login',
@@ -68,48 +68,9 @@ export default {
     }
   },
   methods: {
-    // userid가 필요한지?
-    // setToken: function () {
-    //   const token = localStorage.getItem('jwt')
-    //   const config = {
-    //     headers: {
-    //       Authorization: `JWT ${token}`
-    //     }
-    //   }
-    //   return config
-    // },
-
-    login: function () {
-      axios({
-        method: 'post',
-        url: 'http://127.0.0.1:8000/accounts/api-token-auth/',
-        data: this.credentials,
-      })
-      .then(res => {
-        localStorage.setItem('jwt', res.data.token)
-        this.$emit('login')
-        this.$store.state.isLogin = true
-        this.$store.state.username = this.credentials.username
-
-        // const config = this.setToken()
-        // axios.get('http://127.0.0.1:8000/accounts/user/', config)
-        //   .then((res) => {
-        //     console.log(res)
-        //     console.log(res.data)
-        //     const id = res.data
-        //     this.$store.state.login_user = id
-        //   })
-        //   .catch((err) => {
-        //     console.log(err)
-        //   })
-
-        this.$router.push({ name: 'MovieList' })
-      })
-      .catch(err => {
-        console.log(err)
-        alert('로그인 실패 : 로그인 정보를 확인해주세요.')
-      })
-    },
+    ...mapActions([
+      'login',
+    ])
   },
 }
 </script>
