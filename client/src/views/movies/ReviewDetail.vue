@@ -15,15 +15,15 @@
             <p class="font-2em">
               {{review.content}}
             </p>
+            <p>store:{{email}}</p>
+            <p>{{reviewerEmail}}</p>
             <div class="d-flex justify-content-end">
-              <!--작성자와 접속자가 같다면, 수정/삭제 버튼 활성화-->
-              <!--단, 관리자의 경우 삭제 버튼 활성화 -->
               <button class="btn btn-warning font-do mr-3 font-1-2em"
-                v-if="reviewUsername === this.$store.state.nickname">글 수정</button>
+                v-if="reviewerEmail === email">글 수정</button>
 
               <button class="btn btn-danger font-do mr-3 font-1-2em" v-if="this.$store.state.is_admin"
                 @click="deletereview(review)">글 삭제</button>
-              <button v-else-if="reviewUsername === this.$store.state.nickname" class="btn btn-danger font-do mr-3 font-1-2em">글 삭제</button>
+              <button v-else-if="reviewerEmail === this.$store.state.email" class="btn btn-danger font-do mr-3 font-1-2em">글 삭제</button>
             </div>
             <div class="mt-5">
               <CommentForm :review="review"/>
@@ -45,6 +45,7 @@
   import axios from 'axios'
   import CommentList from '@/components/CommentList'
   import CommentForm from '@/components/CommentForm'
+  import { mapState } from 'vuex'
   export default {
     name: 'ReviewDetail',
     components: {
@@ -57,10 +58,16 @@
         review: '',
         movie: '',
         reviewUsername: '',
+        reviewerEmail: '',
         reviewItem: '',
         commentList: [],
       }
     },
+    computed: {
+    ...mapState([
+      'email',
+    ])
+  },
     methods: {
       setToken: function () {
         const token = localStorage.getItem('jwt')
@@ -90,33 +97,35 @@
   //         name: 'review'
   //       })
   //     },
-  //     deleteReview: function (review) {
-  //       const config = this.setToken()
-  //       axios.delete(`${SERVER_URL}/community/review_delete_update/${review.id}/`, config)
-  //         .then(() => {
-  //           this.$router.push({
-  //             name: 'review'
-  //           })
-  //         })
-  //         .catch((err) => {
-  //           console.log(err)
-  //         })
-  //     },
-  //     updatereviewForm: function (review) {
-  //       const reviewItem = {
-  //         id: review.id,
-  //         purpose: 'update',
-  //         title: review.title,
-  //         content: review.content
-  //       }
-  //       this.$router.push({
-  //         name: 'Createreview',
-  //         params: reviewItem
-  //       })
-  //       //console.log(review.id)
-  //     },
+      deleteReview: function () {
+        axios({
+          method: 'delete',
+          url: `http://127.0.0.1:8000/movies/review/${this.review_pk}/`,
+          headers: this.setToken()
+          })
+          .then(res => {
+            console.log(res)
+            this.$router.push({name: 'ReviewList'})
+          })
+          .catch((err) => {
+            console.log(err)
+          })
+      },
+      updateReviewForm: function (review) {
+        const reviewItem = {
+          id: review.id,
+          purpose: 'update',
+          title: review.title,
+          content: review.content,
+          movie: this.movie
+        }
+        this.$router.push({name: 'CreateReview', params: reviewItem})
+        //console.log(review.id)
+      },
     },
     created: function () {
+      console.log('email')
+      console.log(this.email)
       this.review_pk = this.$route.params.review_pk
 
       axios({
@@ -128,7 +137,7 @@
           this.review = res.data
           console.log(this.review)
           this.reviewUsername = this.review.user.nickname
-          console.log(this.reviewUsername)
+          this.reviewerEmail = this.review.user.email
           this.movie = this.review.movie.title
         })
         .catch(err => {

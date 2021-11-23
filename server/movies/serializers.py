@@ -6,7 +6,7 @@ from django.contrib.auth import get_user_model
 class UserInfoSerializer(serializers.ModelSerializer):
     class Meta:
         model = get_user_model()
-        fields = ('id', 'nickname')
+        fields = ('id', 'nickname','email')
 
 
 class MovielistSerializer(serializers.ModelSerializer):

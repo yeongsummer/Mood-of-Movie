@@ -2,8 +2,9 @@
   <v-container>
     <div id="nav">
       <span>
-        <router-link :to="{ name: 'MovieList' }" class="text-btn">Ranking</router-link> | 
-        <router-link :to="{ name: 'MovieRecommend' }" class="text-btn">Recommend</router-link>
+        <router-link :to="{ name: 'MovieList' }" class="text-btn">Ranking </router-link> | 
+        <router-link :to="{ name: 'MovieRecommend' }" class="text-btn"> Recommend</router-link> |
+        <router-link :to="{ name: 'ReviewList' }" class="text-btn"> Review</router-link>
       </span>
     </div>
     <h1 class="text-center" style="margin-bottom: 20px;">TOP 20</h1>
