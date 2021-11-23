@@ -3,7 +3,8 @@
     <div id='nav'>
       <span>
         <router-link :to="{ name: 'MovieList' }" class="text-btn">Ranking </router-link> | 
-        <router-link :to="{ name: 'MovieRecommend' }" class="text-btn"> Recommend</router-link>
+        <router-link :to="{ name: 'MovieRecommend' }" class="text-btn"> Recommend</router-link> |
+        <router-link :to="{ name: 'ReviewList' }" class="text-btn"> Review</router-link>
       </span>
     </div>
     <div class="background" :style="{'background-image': 'url('+require('@/assets/main_image.jpg')+')'}">

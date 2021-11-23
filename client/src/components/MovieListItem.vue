@@ -55,7 +55,7 @@
       <v-card-title>
         <span class="text-h5">{{ movie.title }}</span>
       </v-card-title>
-      <template  v-if="!reveal">
+      <template >
         <v-card-text v-for="(director,index) in directors" :key=index>
           <p>{{ director }}</p>
           <p>{{ movie.vote_average }} / 10</p>
@@ -69,77 +69,11 @@
         <v-btn
           text
           color="teal accent-4"
-          @click="[reveal = true, getReview(movie.id)]"
-          v-if="!reveal"
+          @click="goReview(movie.id)"
         >
           리뷰보러가기
         </v-btn>
       </v-card-actions>
-
-      <v-expand-transition>
-        <v-card
-          v-if="reveal"
-          class="transition-fast-in-fast-out v-card--reveal"
-          style="height: 100%;"
-        >
-          <v-toolbar
-            color="cyan"
-            dark
-          >
-
-            <v-toolbar-title>Review</v-toolbar-title>
-
-            <v-spacer></v-spacer>
-
-            <v-btn
-              icon
-              @click="goCreateReview(movie.id)"
-            >
-              <v-icon dark>
-                mdi-pencil
-              </v-icon>
-            </v-btn>
-          </v-toolbar>
-          <v-list three-line>
-            <template v-for="(review, index) in review_list">
-              <v-list-item :key="review.pk">
-                <v-list-item-content>
-                  <v-list-item-title v-text="review.title"></v-list-item-title>
-                  <v-list-item-rank v-text="review.rank"></v-list-item-rank>
-                </v-list-item-content>
-              </v-list-item>
-
-              <v-divider
-                v-if="review < reviews.length - 1"
-                :key="index"
-              ></v-divider>
-            </template>
-          </v-list>
-            
-
-
-
-          <!-- <div v-for="review in review_list" :key="review.id">
-            <span>{{ review.title }}</span>
-            <span>평점: {{ review.rank }}</span>
-            <v-btn
-              text
-              @click="goReviewDetail(review.id)"
-            >
-              자세히보기
-            </v-btn>
-          </div> -->
-          <v-card-actions class="pt-0">
-            <v-btn
-              text
-              color="teal accent-4"
-              @click="reveal = false"
-            >
-              Close
-            </v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-expand-transition>
     </v-card>
   </v-dialog>
 </template>
@@ -151,7 +85,6 @@ export default {
   name: 'MovieListItem',
   data: function() {
     return {
-      reveal: false,
       movie_director: '',
       videoId:'',
       directors: [],
@@ -205,24 +138,8 @@ export default {
           console.log(err)
         })
     },
-    getReview: function (movie_pk) {
-      axios({
-        method: 'get',
-        url: `http://127.0.0.1:8000/movies/review_list/${movie_pk}/`,
-        })
-        .then(res => {
-          this.review_list = res.data
-          console.log('getReview',res)
-        })
-        .catch(err => {
-          console.log(err)
-        })
-    },
-    goReviewDetail: function (review_pk) {
-      this.$router.push({ name: "ReviewDetail", params: { review_pk: review_pk }})
-    },
-    goCreateReview: function (movie_pk) {
-      this.$router.push({ name: "CreateReview", params: { movie_pk: movie_pk }})
+    goReview(movie_pk) {
+      this.$router.push({ name: "ReviewList", params: { movie_pk: movie_pk }} )
     }
   },
   // created() {
@@ -242,10 +159,4 @@ export default {
 </script>
 
 <style>
-.v-card--reveal {
-  bottom: 0;
-  opacity: 1 !important;
-  position: absolute;
-  width: 100%;
-}
 </style>

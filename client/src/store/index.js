@@ -8,7 +8,7 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    nickname: null,
+    email: null,
     login: false,
     login_user: null,
     comments: [],
@@ -19,7 +19,10 @@ export default new Vuex.Store({
     },
     GET_COMMENTS: function (state, comments) {
       state.comments = comments
-    }
+    },
+    IS_LOGIN: function (state, email) {
+      state.email = email
+    },
   },
   actions: {
     moveToLink({ state }, routeObject) {
@@ -32,6 +35,9 @@ export default new Vuex.Store({
     getComments({ commit }, comments) {
       commit('GET_COMMENTS', comments)
     },
+    isLogin({ commit }, email) {
+      commit('IS_LOGIN', email)
+    }
   },
   plugins: [
     createPersistedState()

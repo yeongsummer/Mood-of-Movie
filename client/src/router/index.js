@@ -5,6 +5,7 @@ import Login from '../views/accounts/Login.vue'
 import Password from '../views/accounts/Password.vue'
 import MovieList from '../views/movies/MovieList.vue'
 import MovieRecommend from '../views/movies/MovieRecommend.vue'
+import ReviewList from '../views/movies/ReviewList.vue'
 import CreateReview from '../views/movies/CreateReview.vue'
 import ReviewDetail from '../views/movies/ReviewDetail.vue'
 
@@ -36,6 +37,11 @@ const routes = [
     path: '/movies/movie_recommend',
     name: 'MovieRecommend',
     component: MovieRecommend,
+  },
+  {
+    path: '/movies/review',
+    name: 'ReviewList',
+    component: ReviewList,
   },
   {
     path: '/movies/createreview',

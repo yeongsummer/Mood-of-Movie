@@ -22,7 +22,7 @@ export default {
     ...mapState([
       'login',
       'login_user',
-      'nickname',
+      'email',
       'comments',
     ])
   },

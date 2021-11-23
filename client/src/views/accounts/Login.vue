@@ -75,7 +75,7 @@ export default {
       })
       .then(res => {
         localStorage.setItem('jwt', res.data.token)
-        this.$emit('login')
+        this.$store.dispatch('isLogin', this.credentials.email)
         this.$router.push({ name: 'MovieList' })
       })
       .catch(err => {
