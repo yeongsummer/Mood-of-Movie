@@ -9,5 +9,6 @@ urlpatterns = [
     path('<int:user_pk>/password/', views.password, name='password'),
     path('<int:user_pk>/follow/', views.follow, name="follow"),
     path('api-token-auth/', obtain_jwt_token),
-    path('user/', views.get_user),
+    path('<str:nickname>/user/', views.get_user),
+    path('<str:nickname>/get_follow/', views.get_follow),
 ]
