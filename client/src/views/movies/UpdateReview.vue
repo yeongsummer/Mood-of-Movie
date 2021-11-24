@@ -1,41 +1,43 @@
 <template>
-  <v-container>
-    <h2>리뷰 수정하기</h2>
-    <div class="row my-2">
-      <v-text-field
-        label="리뷰 제목을 입력하세요"
-        :rules="rules"
-        hide-details="auto"
-        v-model.trim="title"
-        :value="title"
-      ></v-text-field>
-    </div>
-    <div class="row my-2">
-      <v-rating
-        color="yellow darken-3"
-        background-color="grey darken-1"
-        empty-icon="$ratingFull"
-        half-increments
-        hover
-        large
-        v-model="rank"
-        :value="rank"
-      ></v-rating>
-    </div>
-    <div class="row my-2">
+  <v-container style="width: 80vw;">
+    <div class="updatereview_container">
+      <div class="row">
+        <v-text-field
+          color='green darken-1'
+          label="리뷰 제목을 입력하세요"
+          :rules="rules"
+          hide-details="auto"
+          v-model.trim="title"
+        ></v-text-field>
+      </div>
+      <div class="row my-5">
+        <v-rating
+          color="yellow darken-3"
+          background-color="grey darken-1"
+          empty-icon="$ratingFull"
+          half-increments
+          hover
+          medium
+          v-model="rank"
+        ></v-rating>
+      </div>
+      <div class="row my-2">
         <v-textarea
+          color='green darken-1'
           label="리뷰 내용을 입력하세요"
           auto-grow
           outlined
           rows="5"
-          row-height="50"
+          row-height="40"
           shaped
           v-model.trim="content"
-          :value="content"
         ></v-textarea>
-    </div>
-    <button type="button" class="btn" @click="updateReview()">작성 완료</button>
-  
+      </div>
+      <div align="right">
+        <v-btn @click="goBack()" color='grey lighten-1 mr-5' class="white--text" large>취소</v-btn>
+        <v-btn @click="updateReview()" color='green lighten-1 mr-2' class="white--text" large>작성 완료</v-btn>
+      </div>
+    </div>  
   </v-container>
 </template>
 
@@ -58,6 +60,9 @@ export default {
         Authorization: `JWT ${token}`
       }
       return config
+    },
+    goBack: function () {
+      this.$router.push({ name: "ReviewDetail", params: { review_pk: this.review_pk }} )
     },
     updateReview: function () {
       const reviewItem = {
@@ -88,11 +93,17 @@ export default {
   created: function () {
     this.review_pk = this.$route.params.review_pk
     this.title = this.$route.params.title
-    this.rank = this.$route.params.rank
+    this.rank = this.$route.params.rank/2
     this.content = this.$route.params.content
   },
 }
 </script>
 
 <style>
+.updatereview_container {
+  margin-top: 3%;
+  border: 2px solid #A5D6A7;
+  border-radius: 10px;
+  padding: 3%;
+}
 </style>

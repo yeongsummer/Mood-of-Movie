@@ -1,12 +1,5 @@
 <template>
   <v-container style="width: 80vw">
-    <div id='nav'>
-      <span>
-        <router-link :to="{ name: 'MovieList' }" class="text-btn">Ranking </router-link> | 
-        <router-link :to="{ name: 'MovieRecommend' }" class="text-btn"> Recommend</router-link> |
-        <router-link :to="{ name: 'ReviewList' }" class="text-btn"> Review</router-link>
-      </span>
-    </div>
     <div class="background" :style="{'background-image': 'url('+require('@/assets/main_image.jpg')+')','width':'100%'}">
       <div class="main_text">
         <p>지금 나에게 맞는 영화를 찾고,</p>
@@ -16,7 +9,7 @@
     <h1 class="text-center" style="margin: 20px;">TOP 20</h1>
     <v-row no-gutters class="justify-center background" :style="{'background-image': 'url('+require('@/assets/list_cover.png')+')','width':'100%'}">
       <movie-list-item 
-        v-for="(movie,index) in movies" 
+        v-for="(movie,index) in movie_ranking" 
         :key="index"
         :index="index"
         :movie="movie"
@@ -28,6 +21,7 @@
 
 <script>
 import MovieListItem from '@/components/MovieListItem.vue'
+import { mapState } from 'vuex'
 
 import axios from 'axios'
 // import _ from 'lodash'
@@ -45,44 +39,32 @@ export default {
       }
     }
   },
+  computed: {
+    ...mapState([
+      'movie_ranking'
+    ])
+  },
   methods: {
-    getMovies: function () {
+  },
+  created: function () {
+    this.active_tab = this.$router.params.active_tab
+    if (this.movie_ranking.length != 20) {
       axios({
         method: 'get',
         url: 'http://127.0.0.1:8000/movies/',
         })
         .then(res => {
-          this.movies = res.data
+          this.$router.commit('GET_RANKING', res.data)
         })
         .catch(err => {
           console.log(err)
         })
-    },
-  },
-  created: function () {
-    this.getMovies()
+    }
   }
 }
 </script>
 
 <style>
-#nav {
-  text-align: center;
-  padding: 20px;
-}
-
-#nav a {
-  font-weight: 500;
-  font-size: 20px;
-  color: #2c3e50;
-  text-decoration: none;
-}
-
-#nav a.router-link-exact-active {
-  font-size: 30px;
-  color:#66BB6A
-}
-
 .background {
   background-size: 100% 100%;
 }

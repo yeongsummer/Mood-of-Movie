@@ -7,14 +7,12 @@
     >
       <v-spacer></v-spacer>
 
-      <div class="d-flex align-center">
+      <div id="logo" class="d-flex align-center" @click="goMain()">
         <v-img
-          alt="Vuetify Logo"
           class="shrink mr-2"
           contain
-          src="https://cdn.vuetifyjs.com/images/logos/vuetify-logo-dark.png"
+          src='@/assets/logo.png'
           transition="scale-transition"
-          width="40"
         />
       </div>
       <v-spacer></v-spacer>
@@ -53,6 +51,9 @@ export default {
       'moveToLink',
       'logout'
     ]),
+    goMain: function() {
+      this.$router.push({name: 'MovieList'})
+    }
   },
   computed: {
     ...mapState([
@@ -61,6 +62,7 @@ export default {
       'userPk',
     ])
   },
+
 }
 </script>
 
@@ -78,5 +80,14 @@ export default {
 .text-btn {
   color:#000;
   text-decoration:none;
+}
+#logo {
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%, 0%);
+}
+
+#logo:hover{
+  cursor: pointer; 
 }
 </style>

@@ -52,12 +52,12 @@
           </iframe>
         </div>
         <v-card-title>
-          <span class="text-h5">{{ movie.title }}</span>
+          <span class="text-h5 font-weight-bold" style="background-color:#C8E6C9;">{{ movie.title }}</span>
         </v-card-title>
         <template >
           <v-card-text v-for="(director,index) in directors" :key=index>
-            <p>{{ director }}</p>
-            <p>{{ movie.vote_average }} / 10</p>
+            <p>감독: {{ director }}</p>
+            <p>평점: {{ movie.vote_average }} / 10</p>
             <div>
               {{ movie.overview }}
             </div>

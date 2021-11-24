@@ -1,28 +1,12 @@
 <template>
   <v-container style="width: 80vw">
-    <div id='nav'>
-      <span>
-        <router-link :to="{ name: 'MovieList' }" class="text-btn">Ranking </router-link> | 
-        <router-link :to="{ name: 'MovieRecommend' }" class="text-btn"> Recommend</router-link> |
-        <router-link :to="{ name: 'ReviewList' }" class="text-btn"> Review</router-link>
-      </span>
-    </div>
-    <!-- <div class="background" :style="{'background-image': 'url('+require('@/assets/main_image.jpg')+')'}">
-      <div class="main_text">
-        <p>지금 나에게 맞는 영화를 찾고,</p>
-        <p>나만의 영화 경험을 공유하세요.</p>
-      </div>
-    </div> -->
     <v-toolbar
       id="toolbar"
-      color="green darken-1"
+      color="green lighten-1"
       dark
     >
-
       <v-toolbar-title>Review</v-toolbar-title>
-
       <v-spacer></v-spacer>
-
       <v-autocomplete
         v-model="select"
         :loading="loading"
@@ -42,56 +26,34 @@
       </v-btn>
       <v-btn
         icon
-        @click="goCreateReview(movie.id)"
+        @click="goCreateReview()"
       >
         <v-icon dark>
           mdi-pencil
         </v-icon>
       </v-btn>
     </v-toolbar>
-    <h1>{{ movie_title }}</h1>
-    <v-list
-      two-line
-    >
-      <template v-for="(review, index) in review_list">
-        <v-list-item
-          :key="review.id"
-        >
-          <v-list-item-content>
-            <v-rating
-              color="yellow darken-3"
-              background-color="grey darken-1"
-              empty-icon="$ratingFull"
-              half-increments
-              readonly
-              hover
-              size="15"
-              :value="review.rank/2"
-            ></v-rating>
-            <v-list-item-title v-text="review.title"></v-list-item-title>
-          </v-list-item-content>
-
-          <v-list-item-action>
-            <v-btn
-              text
-              @click="goReviewDetail(review.id)"
-            >
-              자세히보기
-            </v-btn>
-          </v-list-item-action>
-        </v-list-item>
-
-        <v-divider
-          v-if="index < review_list.length - 1"
-          :key="index"
-        ></v-divider>
-      </template>
-    </v-list>
+    <div class="text-center my-10">
+      <span style="background-color:#C8E6C9; font-size:30px; font-weight: 700;">{{ movie_title }}</span>
+    </div>
+    <div v-if="review_list.length == 0" class="text-center">
+      <div v-if="flag">
+        <div v-if="movie_title">
+          <h1>리뷰가 아직 없어요!</h1>
+        </div>
+      </div>
+    </div>
+    <review-list-item
+      v-for="review in review_list" 
+      :key="review.id"
+      :review="review"
+      @click.native="goReviewDetail(review.id)"
+    />
   </v-container>
 </template>
 
 <script>
-
+import ReviewListItem from '@/components/ReviewListItem'
 import axios from 'axios'
 import { mapState } from 'vuex'
 // import _ from 'lodash'
@@ -99,9 +61,11 @@ import { mapState } from 'vuex'
 export default {
   name: 'ReviewList',
   components: {
+    ReviewListItem
   },
   data: function () {
     return {
+      flag: false,
       movie_pk: '',
       movies: {
         type: Array,
@@ -111,7 +75,7 @@ export default {
 
       loading: false,
       items: [],
-      search: null,
+      search: '',
       select: null,
       movie_title:null,
     }
@@ -141,7 +105,7 @@ export default {
         })
         .then(res => {
           this.review_list = res.data
-          console.log('getReview',res)
+          this.movie_pk =res.data[0].movie_id
         })
         .catch(err => {
           console.log(err)
@@ -150,8 +114,8 @@ export default {
     goReviewDetail: function (review_pk) {
       this.$router.push({ name: "ReviewDetail", params: { review_pk: review_pk }})
     },
-    goCreateReview: function (movie_pk) {
-      this.$router.push({ name: "CreateReview", params: { movie_pk: movie_pk }})
+    goCreateReview: function () {
+      this.$router.push({ name: "CreateReview", params: { movie_pk: this.movie_pk, movie_title: this.movie_title }})
     },
     querySelections (v) {
       this.loading = true
@@ -165,6 +129,7 @@ export default {
     },
     searchMovie(search) {
       this.movie_title = search
+      this.flag = true
       console.log(search)
       axios({
         method: 'get',
@@ -173,6 +138,8 @@ export default {
         })
         .then(res => {
           this.review_list = res.data
+          console.log(this.review_list)
+          this.movie_pk =res.data[0].movie_id
         })
         .catch(err => {
           console.log(err)
@@ -182,6 +149,7 @@ export default {
   },
   created: function () {
     if (this.$route.params.movie_pk) {
+      this.flag = true
       this.movie_pk = this.$route.params.movie_pk
       this.movie_title = this.$route.params.movie_title
       this.getReview()

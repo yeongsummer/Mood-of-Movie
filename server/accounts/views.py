@@ -71,10 +71,9 @@ def follow(request, nickname):
 @api_view(['GET'])
 @authentication_classes([JSONWebTokenAuthentication])
 @permission_classes([IsAuthenticated])
-def get_user(request, nickname):
-    user = get_object_or_404(get_user_model(), nickname=nickname)
+def get_user(request):
+    return Response({ 'id': request.user.id, 'nickname': request.user.nickname })
 
-    return Response({ 'id': user.id, 'nickname': user.nickname })
 
 
 @api_view(['GET'])

@@ -1,60 +1,80 @@
 <template>
-  <div>
-    <div class="container">
-      <div class="row">
-        <h1 class="font-do my-5">글 상세보기</h1>
+  <v-container style="width: 80vw;">
+    <div class="review_container">
+      <div style="font-size:25px; font-weight:700; margin-bottom:30px;">
+        {{reviewUsername}}님의 <span style="background-color:#C8E6C9; font-size:30px;">{{ movie_title }}</span> 리뷰
       </div>
-      <div class="row d-flex font-poor">
-        <div class="media" style="width: 100%; word-break:break-all;">
-          <div class="media-body text-justify">
-            <h2 class="mt-0">제목: {{review.title}}</h2>
-            <p>작성자 : {{reviewUsername}}</p>
-            <p>영화: {{movie}}</p>
-            <p>작성: {{ review.created_at | moment('YYYY-MM-DD hh:mm') }} | 최근수정:
-              {{ review.updated_at | moment('YYYY-MM-DD hh:mm') }} </p>
-            <v-rating
-              color="yellow darken-3"
-              background-color="grey darken-1"
-              empty-icon="$ratingFull"
-              half-increments
-              readonly
-              hover
-              size="15"
-              :value="review.rank/2"
-            ></v-rating>
-            <p class="font-2em">
-              {{review.content}}
-            </p>
-            <v-btn icon :color="liked? 'pink':'grey'" @click.stop="reviewLike(review.id)">
-              <v-icon>mdi-heart</v-icon>
-            </v-btn>
-            <span>{{ like_count }}</span>
-
-            <div class="d-flex justify-content-end">
-              <v-btn depressed v-if="reviewUsername === nickname" @click="updateReview(review)">
-                수정
-              </v-btn>
-              <v-btn depressed v-if="reviewUsername === nickname" @click="deleteReview(review)">
-                삭제
-              </v-btn>
-              <v-btn depressed v-if="reviewUsername === nickname" @click="backToReviewList">
-                뒤로가기
-              </v-btn>
-
+      <div>
+        <v-row>
+          <v-col style="max-width:230px; margin-right: 5px;">
+            <v-img
+              :src="getImgUrl(movie_poster)"
+              :lazy-src="getImgUrl(movie_poster)"
+              height="329"
+              width="230"
+              style="border-radius:7px;"
+            >
+              <template v-slot:placeholder>
+                <v-row class="fill-height ma-0" align="center" justify="center">
+                  <v-progress-circular
+                    indeterminate
+                    color="grey lighten-5"
+                  ></v-progress-circular>
+                </v-row>
+              </template>
+            </v-img>
+          </v-col>
+          <v-col>
+            <div class="review_title_box" justify="space-around">
+              <span style="font-size:25px; font-weight:700;">{{review.title}}</span>
+              <v-rating
+                class="d-inline"
+                color="yellow darken-3"
+                background-color="grey darken-1"
+                empty-icon="$ratingFull"
+                half-increments
+                readonly
+                hover
+                size="20"
+                :value="review.rank/2"
+                style="margin-left:10px;"
+              ></v-rating>
+              <span>{{review.rank}}</span>
+              <div style="text-align: left; font-size: 0.9rem;">작성: {{ review.created_at | moment('YYYY-MM-DD') }} | 최근수정:
+                {{ review.updated_at | moment('YYYY-MM-DD') }} </div>
             </div>
-            <div class="mt-5">
-              <CommentForm :review="review"/>
-              <!-- <CommentForm v-if="this.$store.state.login" :review="review" /> -->
-              <!-- <p v-else>댓글을 작성하려면 로그인이 필요합니다. </p> -->
+            <v-btn text @click="goProfile()" class="mb-3">
+              {{reviewUsername}}님의 모든 리뷰 더보기 >
+            </v-btn>
+            <div>
+              {{review.content}}
+            </div>
+            <div align="right">
+              <v-btn icon :color="liked? 'pink':'grey'" @click.stop="reviewLike(review.id)">
+                <v-icon>mdi-heart</v-icon>
+              </v-btn>
+              <span style="margin-right:20px;">{{ like_count }}</span>
             </div>
             <br>
-            <hr>
-            <CommentList :review="review"/>
-          </div>
-        </div>
+            <div align="right" class="">
+              <v-btn color='green lighten-1' class="white--text mr-2" depressed v-if="reviewUsername === nickname" @click="updateReview(review)">
+                수정
+              </v-btn>
+              <v-btn color='green lighten-1' class="white--text mr-2" depressed v-if="reviewUsername === nickname" @click="deleteReview(review)">
+                삭제
+              </v-btn>
+              <v-btn color='green lighten-1' class="white--text mr-2" depressed @click="backToReviewList">
+                뒤로가기
+              </v-btn>
+            </div>
+          </v-col>
+        </v-row>
       </div>
+      <br>
+      <CommentForm :review="review"/>
+      <CommentList :review="review"/>
     </div>
-  </div>
+  </v-container>
 </template>
 
 <script>
@@ -73,7 +93,7 @@
       return {
         review_pk: '',
         review: '',
-        movie: '',
+        movie_title: '',
         movie_pk:'',
         reviewUsername: '',
         reviewerEmail: '',
@@ -96,6 +116,10 @@
         }
         return config
       },
+      getImgUrl: function (url) {
+      const imgUrl = `https://image.tmdb.org/t/p/w300/${url}`
+      return imgUrl
+      },
       getComments: function () {
         console.log('this.review',this.review)
         axios({
@@ -113,7 +137,7 @@
         })
       },
       backToReviewList: function () {
-        this.$router.push({name: 'ReviewList', params: {movie_pk: this.movie_pk}})
+        this.$router.push({name: 'ReviewList', params: {movie_pk: this.movie_pk, movie_title: this.movie_title}})
       },
       deleteReview: function () {
         axios({
@@ -123,7 +147,7 @@
           })
           .then(res => {
             console.log(res)
-            this.$router.push({name: 'ReviewList', params: {movie_pk: this.movie_pk}})
+            this.$router.push({name: 'ReviewList', params: {movie_pk: this.movie_pk, movie_title: this.movie_title}})
           })
           .catch((err) => {
             console.log(err)
@@ -156,6 +180,9 @@
             console.log(err)
           })
       },
+      goProfile() {
+        this.$router.push(`/accounts/${this.reviewUsername}/profile`)
+      }
     },
     created: function () {
       console.log('email')
@@ -172,8 +199,9 @@
           console.log(this.review)
           this.reviewUsername = this.review.user.nickname
           this.reviewerEmail = this.review.user.email
-          this.movie = this.review.movie.title
-          this.movie_pk = this. review.movie.id
+          this.movie_title = this.review.movie.title
+          this.movie_pk = this.review.movie.id
+          this.movie_poster = this.review.movie.poster_path
         })
         .catch(err => {
           console.log(err)
@@ -201,4 +229,17 @@
 </script>
 
 <style scoped>
+.review_container {
+  margin-top: 3%;
+  margin-bottom: 3%;
+  border: 2px solid #8FBC8B;
+  border-radius: 10px;
+  padding: 3%;
+}
+
+.review_title_box {
+  background-color: #EFE8D8;
+  padding: 15px 20px 15px 20px;
+  border-radius: 10px;
+}
 </style>
