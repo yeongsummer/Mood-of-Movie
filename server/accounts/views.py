@@ -62,7 +62,10 @@ def follow(request, nickname):
             user.followers.remove(request.user)
         else:
             user.followers.add(request.user)
-    return HttpResponse(status=200)
+    context = {
+
+    }
+    return Response(context, status=status.HTTP_200_OK)
 
 
 @api_view(['GET'])
@@ -70,6 +73,7 @@ def follow(request, nickname):
 @permission_classes([IsAuthenticated])
 def get_user(request):
     return Response({ 'id': request.user.id, 'nickname': request.user.nickname })
+
 
 
 @api_view(['GET'])

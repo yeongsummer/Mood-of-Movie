@@ -28,9 +28,6 @@
         <v-btn text @click="moveToLink({ name: 'Login' })">Login</v-btn>
         <v-btn text @click="moveToLink({ name: 'Signup' })">Signup</v-btn>
       </span>
-      <v-btn icon>
-        <v-icon>mdi-magnify</v-icon>
-      </v-btn>
     </v-app-bar>
 
     <v-main>
