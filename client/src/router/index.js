@@ -1,7 +1,5 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Signup from '../views/accounts/Signup.vue'
-import Login from '../views/accounts/Login.vue'
 import Password from '../views/accounts/Password.vue'
 import Profile from '../views/accounts/Profile.vue'
 import MovieList from '../views/movies/MovieList.vue'
@@ -15,16 +13,6 @@ import UpdateReview from '../views/movies/UpdateReview.vue'
 Vue.use(VueRouter)
 
 const routes = [
-  {
-    path: '/accounts/signup',
-    name: 'Signup',
-    component: Signup,
-  },
-  {
-    path: '/accounts/login',
-    name: 'Login',
-    component: Login,
-  },
   {
     path: '/accounts/password',
     name: 'Password',

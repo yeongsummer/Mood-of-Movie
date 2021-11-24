@@ -11,12 +11,14 @@ export default new Vuex.Store({
     nickname: null,
     isLogin: false,
     userPk: null,
+    profile_img: '@/assets/default.jpg',
     comments: [],
     config: null,
     movie_list: [],
     recommend_movie_list:[],
     followers: [],
     followings: [],
+    likeMovieList: [],
   },
   getters: {
   },
@@ -58,6 +60,7 @@ export default new Vuex.Store({
     UPDATEFOLLOW: function (state, data) {
       state.followers = data.followers
       state.followings = data.followings
+      state.likeMovieList = data.likeMovieList
     },
     ADDFOLLOW: function (state, user) {
       state.followers.push(user)
@@ -98,7 +101,7 @@ export default new Vuex.Store({
         }
         commit('CONFIG', config)
 
-        axios.get(`http://127.0.0.1:8000/accounts/${ state.nickname }/user/`, state.config)
+        axios.get(`http://127.0.0.1:8000/accounts/user/`, state.config)
           .then((res) => {
             // console.log(res.data)
             const id = res.data.id
@@ -149,7 +152,6 @@ export default new Vuex.Store({
       commit('ISLOGIN', false)
       commit('USERINFO', {'id': '', 'nickname': ''})
       localStorage.removeItem('jwt')
-      router.push({ name: 'Login' })
     },
     changepassword({ state }, changepasswordData) {
       const token = localStorage.getItem('jwt')
@@ -165,13 +167,29 @@ export default new Vuex.Store({
         })
         .catch(err => console.error(err))
     },
+    changenickname({ state, commit }, nickname) {
+      axios({
+        method: 'put',
+        url: `http://127.0.0.1:8000/accounts/${state.userPk}/user_profile_update_delete/`,
+        data: {'nickname': nickname},
+      })
+      .then(res => {
+        console.log(res)
+        const data = {
+          'id': state.userPk,
+          'nickname': res.data.nickname
+        }
+        commit('USERINFO', data)
+      })
+    },
     get_follow: function ({ state, commit }, nickname) {
       axios.get(`http://127.0.0.1:8000/accounts/${ nickname }/get_follow/`, state.config)
         .then((res) => {
-          // console.log(res.data)
+          console.log('이거', res)
           const followers = res.data.followers
           const followings = res.data.followings
-          commit('UPDATEFOLLOW', {'followers': followers, 'followings': followings})
+          const likeMovieList = res.data.likeMovieList
+          commit('UPDATEFOLLOW', {'followers': followers, 'followings': followings, 'likeMovieList': likeMovieList})
         })
         .catch((err) => {
           console.log(err)
@@ -179,16 +197,25 @@ export default new Vuex.Store({
     },
     follow: function ({ state, commit }, nickname) {
       axios.post(`http://127.0.0.1:8000/accounts/${ nickname }/follow/`, null, state.config)
-      .then(res => {
-        res
-        console.log('여기!')
-        // 여기를 닉네임으로? 객체로?
-        commit('ADDFOLLOW', state.nickname)
+      .then(response => {
+        response
+        axios.get(`http://127.0.0.1:8000/accounts/${ nickname }/get_follow/`, state.config)
+        .then((res) => {
+          const followers = res.data.followers
+          const followings = res.data.followings
+          commit('UPDATEFOLLOW', {'followers': followers, 'followings': followings})
+        })
+        .catch((err) => {
+          console.log(err)
+        })
       })
       .catch(err => {
         console.log(err)
       })
     },
+    aa: function () {
+      console.log('aa')
+    }
   },
   plugins: [
     createPersistedState()

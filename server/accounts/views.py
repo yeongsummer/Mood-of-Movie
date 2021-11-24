@@ -1,4 +1,4 @@
-from django.shortcuts import render, get_object_or_404, get_list_or_404
+from django.shortcuts import render, redirect, get_object_or_404, get_list_or_404
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
@@ -9,6 +9,9 @@ from django.http import HttpResponse
 from rest_framework.decorators import authentication_classes, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_jwt.authentication import JSONWebTokenAuthentication
+from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth import update_session_auth_hash
+from django.contrib import messages
 # Create your views here.
 
 @api_view(['POST'])
@@ -49,9 +52,26 @@ def user_profile_update_delete(request, user_pk):
         return Response({ 'id': user_pk }, status=status.HTTP_204_NO_CONTENT)
 
 
-@api_view(['PUT'])
-def password(request, user_pk):
-    pass
+# @api_view(['POST'])
+# def password(request, user_pk):
+#     user = get_object_or_404(get_user_model(), pk=user_pk)
+
+#     if request.method == 'POST':
+#         form = PasswordChangeForm(request.user, request.POST)
+#         if form.is_valid():
+#             user = form.save()
+#             update_session_auth_hash(request, user)
+#             messages.success(request, '비밀번호가 변경되었습니다.')
+#             return HttpResponse(status=200)
+#         else:
+#             messages.error(request, '비밀번호 변경 실패')
+#     else:
+#         form = PasswordChangeForm(request.user)
+    
+#     context = {
+#         'form': form
+#     }
+#     return Response(context)
 
 
 @api_view(['POST'])
@@ -62,19 +82,14 @@ def follow(request, nickname):
             user.followers.remove(request.user)
         else:
             user.followers.add(request.user)
-    context = {
-
-    }
-    return Response(context, status=status.HTTP_200_OK)
+    return HttpResponse(status=200)
 
 
 @api_view(['GET'])
 @authentication_classes([JSONWebTokenAuthentication])
 @permission_classes([IsAuthenticated])
-def get_user(request, nickname):
-    user = get_object_or_404(get_user_model(), nickname=nickname)
-
-    return Response({ 'id': user.id, 'nickname': user.nickname })
+def get_user(request):
+    return Response({ 'id': request.user.id, 'nickname': request.user.nickname })
 
 
 @api_view(['GET'])
@@ -85,4 +100,6 @@ def get_follow(request, nickname):
 
     followers = user.followers
     followings = user.followings
-    return Response({ 'followers': followers, 'followings': followings })
+    like_movies = user.like_movies
+    print(followings, followers)
+    return Response({ 'followers': followers, 'followings': followings, 'likeMovieList': like_movies })
