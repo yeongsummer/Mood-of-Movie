@@ -55,8 +55,8 @@ def password(request, user_pk):
 
 
 @api_view(['POST'])
-def follow(request, user_pk):
-    user = get_object_or_404(get_user_model(), pk=user_pk)
+def follow(request, nickname):
+    user = get_object_or_404(get_user_model(), nickname=nickname)
     if user != request.user:
         if user.followers.filter(pk=request.user.pk).exists():
             user.followers.remove(request.user)

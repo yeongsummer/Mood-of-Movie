@@ -178,16 +178,7 @@ export default new Vuex.Store({
         })
     },
     follow: function ({ state, commit }, nickname) {
-      let userId = -1
-      axios.get(`http://127.0.0.1:8000/accounts/${ nickname }/user/`, state.config)
-        .then((res) => {
-          userId = res.data.id
-        })
-        .catch((err) => {
-          console.log(err)
-        })
-      
-      axios.post(`http://127.0.0.1:8000/accounts/${ userId }/follow/`, null, state.config)
+      axios.post(`http://127.0.0.1:8000/accounts/${ nickname }/follow/`, null, state.config)
       .then(res => {
         res
         // 여기를 닉네임으로? 객체로?
