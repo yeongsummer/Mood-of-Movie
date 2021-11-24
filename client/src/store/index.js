@@ -178,11 +178,7 @@ export default new Vuex.Store({
         })
     },
     follow: function ({ state, commit }, nickname) {
-      axios({
-        method: 'post',
-        url: `http://127.0.0.1:8000/accounts/${ nickname }/follow/`,
-        headers: state.config
-        })
+      axios.post(`http://127.0.0.1:8000/accounts/${ nickname }/follow/`, null, state.config)
       .then(res => {
         res
         console.log('여기!')
