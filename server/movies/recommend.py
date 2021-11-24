@@ -48,7 +48,7 @@ from django.shortcuts import get_object_or_404
 
 
 def recommend(movie_title):
-    movie_tags = pd.read_csv('C:/Users/164045/Desktop/final-pjt/server/movies/movie_tags.csv',encoding='CP949')
+    movie_tags = pd.read_csv('./movies/movie_tags.csv',encoding='CP949')
     lv = TfidfVectorizer(max_features=5000, stop_words='english')
     vector = lv.fit_transform(movie_tags['tags']).toarray()
     similarity = cosine_similarity(vector)
