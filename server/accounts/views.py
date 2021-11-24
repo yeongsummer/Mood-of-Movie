@@ -68,17 +68,15 @@ def follow(request, nickname):
 @api_view(['GET'])
 @authentication_classes([JSONWebTokenAuthentication])
 @permission_classes([IsAuthenticated])
-def get_user(request, user_nickname):
-    user = get_object_or_404(get_user_model(), nickname=user_nickname)
-
-    return Response({ 'id': user.id, 'nickname': user.nickname })
+def get_user(request):
+    return Response({ 'id': request.user.id, 'nickname': request.user.nickname })
 
 
 @api_view(['GET'])
 @authentication_classes([JSONWebTokenAuthentication])
 @permission_classes([IsAuthenticated])
-def get_follow(request, user_nickname):
-    user = get_object_or_404(get_user_model(), nickname=user_nickname)
+def get_follow(request, nickname):
+    user = get_object_or_404(get_user_model(), nickname=nickname)
 
     followers = user.followers
     followings = user.followings

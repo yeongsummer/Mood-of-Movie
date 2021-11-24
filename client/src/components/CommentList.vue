@@ -1,13 +1,13 @@
 <template>
   <div>
-    <h3>댓글 목록</h3>
-
     <div v-for="comment in comments" :key="comment.id" class="media mt-3">
-      <p>{{ comment.nickname }}</p>
-      <p>{{ comment.content }}</p>
-      <v-btn depressed v-if="comment.nickname === nickname " @click="deleteComment(comment)">
+      <p style="font-weight:700; margin-bottom:0px;">{{ comment.nickname }}</p>
+      <span>{{ comment.content }}</span>
+      <span style="margin-left:10px; font-size:12px;">{{ comment.created_at | moment('YYYY-MM-DD hh:mm') }}</span>
+      <v-btn class="ml-4" small depressed v-if="comment.nickname === nickname " @click="deleteComment(comment)">
         삭제
       </v-btn>
+      <hr style="margin-top: 5px;">
     </div>
   </div>
 </template>

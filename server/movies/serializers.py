@@ -32,10 +32,11 @@ class MovieSerializer(serializers.ModelSerializer):
 
 
 class ReviewlistSerializer(serializers.ModelSerializer):
+    user = UserInfoSerializer()
     
     class Meta:
         model = Review
-        fields = ('id','title','rank')
+        fields = ('id','title','rank','content','created_at','user','movie_id')
 
 
 class ReviewDetailSerializer(serializers.ModelSerializer):
@@ -59,7 +60,7 @@ class CommentlistSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Comment
-        fields = ('id','content','user')
+        fields = ('id','content','user','created_at')
 
 
 class CommentSerializer(serializers.ModelSerializer):
