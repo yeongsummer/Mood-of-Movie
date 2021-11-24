@@ -19,10 +19,15 @@ export default new Vuex.Store({
     followers: [],
     followings: [],
     likeMovieList: [],
+    movie_ranking: [],
+
   },
   getters: {
   },
   mutations: {
+    GET_RANKING: function (state, movies) {
+      state.movie_ranking = movies
+    },
     CREATE_COMMENT: function (state, commentItem) {
       state.comments.unshift(commentItem)
     },
@@ -36,7 +41,8 @@ export default new Vuex.Store({
         const commentItem = {
           id: comment.id,
           content: comment.content,
-          nickname: comment.user.nickname
+          nickname: comment.user.nickname,
+          created_at: comment.created_at
         }
         state.comments.unshift(commentItem)
       })
@@ -119,8 +125,19 @@ export default new Vuex.Store({
         console.log(err)
         alert('로그인 실패 : 로그인 정보를 확인해주세요.')
       })
+      // 메인 페이지 영화 랭킹 가져오는 요청
+      axios({
+        method: 'get',
+        url: 'http://127.0.0.1:8000/movies/',
+        })
+        .then(res => {
+          commit('GET_RANKING', res.data)
+        })
+        .catch(err => {
+          console.log(err)
+        })
 
-
+      // 자동완성 영화 데이터 가져오는 요청
       axios({
         method: 'get',
         url: `http://127.0.0.1:8000/movies/all_movie/`,
@@ -132,21 +149,25 @@ export default new Vuex.Store({
           console.log(err)
         })
 
-        const default_movie = ['소울', '러브 액츄얼리', '캡틴 마블', '모아나', '텍사스 전기톱 연쇄살인사건']
-        let recommendMovie = []
-        default_movie.forEach((movie_pk) => {
-          axios({
-            method: 'get',
-            url: `http://127.0.0.1:8000/movies/movie_recommend/${movie_pk}/`
-            })
-            .then(res => {
-              recommendMovie.push(res.data)
-            })
-            .catch(err => {
-              console.log(err)
-            })
+      // 추천 페이지 영화 가져오는 요청
+      const default_movie = ['소울', '러브 액츄얼리', '캡틴 마블', '모아나', '텍사스 전기톱 연쇄살인사건']
+      let recommendMovie = []
+
+      function get_default_movie(movie_title) {
+        return axios ({
+          method: 'get',
+          url: `http://127.0.0.1:8000/movies/movie_recommend/${movie_title}/`
           })
-      commit('GET_RECOMMEND_MOVIES', recommendMovie)
+      }
+      Promise.all(default_movie.map(get_default_movie)).then(res => { 
+        console.log('이해가 안되네?', res)
+        res.forEach((movies) => {
+          recommendMovie.push(movies.data)
+        commit('GET_RECOMMEND_MOVIES', recommendMovie)
+        })
+        // commit('GET_RECOMMEND_MOVIES', recommendMovie)
+      })
+      console.log(recommendMovie)
     },
     logout: function ({ commit }) {
       commit('ISLOGIN', false)

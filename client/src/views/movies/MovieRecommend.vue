@@ -1,14 +1,15 @@
 <template>
-  <v-container style="width: 80vw">
-    <div id="nav">
-      <span>
-        <router-link :to="{ name: 'MovieList' }" class="text-btn">Ranking </router-link> | 
-        <router-link :to="{ name: 'MovieRecommend' }" class="text-btn"> Recommend</router-link> |
-        <router-link :to="{ name: 'ReviewList' }" class="text-btn"> Review</router-link>
-      </span>
-    </div>
+  <v-container style="width: 80vw; color:#2c3e50;">
     <!-- <h1 class="text-center" style="margin-bottom: 20px;">영화 추천</h1> -->
-    <h1 class="maintitle">{{nickname}}님을 위한 추천 영화 🎁</h1>
+    <span style="font-size:30px; font-weight: 700; margin-top: 5%;">{{nickname}}님을 위한 추천 영화</span>
+    <v-img
+      class="shrink mr-2"
+      contain
+      src='@/assets/movie.png'
+      transition="scale-transition"
+      height='40'
+      style="display: inline-block;"
+    />
     <v-autocomplete
       v-model="select"
       :loading="loading"
@@ -28,34 +29,75 @@
       :movieList="recommended_movies"
     />
     <div class="subtitle">
-      <h1>나를 힐링시켜줄 음악 영화 🎵</h1>
+      <span style="font-size:30px; font-weight: 700">나를 힐링시켜줄 음악 영화</span>
+      <v-img
+        class="shrink mr-2"
+        contain
+        src='@/assets/music.png'
+        transition="scale-transition"
+        height='40'
+        style="display: inline-block;"
+      />
     </div>
     <recommend-List
       :movieList="recommend_movie_list[0]"
     />
     <div class="subtitle">
-      <h1>다가오는 크리스마스는 영화보면서 방콕 어때요? 🏡</h1>
+      <span style="font-size:30px; font-weight: 700">다가오는 크리스마스는 영화보면서 방콕 어때요?</span>
+      <v-img
+        class="shrink mr-2"
+        contain
+        src='@/assets/house.png'
+        transition="scale-transition"
+        height='40'
+        style="display: inline-block;"
+      />
     </div>
     <recommend-List
       :movieList="recommend_movie_list[1]"
     />
     <div class="subtitle">
-      <h1>시원한 액션보면서 스트레스를 날리자 👊</h1>
+      <span style="font-size:30px; font-weight: 700">시원한 액션보면서 스트레스를 날리자</span>
+      <v-img
+        class="shrink mr-2"
+        contain
+        src='@/assets/fight.png'
+        transition="scale-transition"
+        height='40'
+        style="display: inline-block;"
+      />
     </div>
     <recommend-List
       :movieList="recommend_movie_list[2]"
     />
     <div class="subtitle">
-      <h1>겨울이지만 바다는 보고싶어 🌊</h1>
+      <span style="font-size:30px; font-weight: 700">겨울이지만 바다는 보고싶어</span>
+      <v-img
+        class="shrink mr-2"
+        contain
+        src='@/assets/beach.png'
+        transition="scale-transition"
+        height='40'
+        style="display: inline-block;"
+      />
     </div>
     <recommend-List
       :movieList="recommend_movie_list[3]"
     />
     <div class="subtitle">
-      <h1>숨막히는 긴장감을 느껴봐 😱</h1>
+      <span style="font-size:30px; font-weight: 700">숨막히는 긴장감을 느껴봐 </span>
+      <v-img
+        class="shrink mr-2"
+        contain
+        src='@/assets/scared.png'
+        transition="scale-transition"
+        height='40'
+        style="display: inline-block;"
+      />
     </div>
     <recommend-List
       :movieList="recommend_movie_list[4]"
+      style="margin-bottom:100px;"
     />
     
   </v-container>
@@ -130,22 +172,24 @@ export default {
   },
   created() {
     console.log(this.recommend_movie_list.length)
-    if (this.recommend_movie_list.length == 0) {
-        const default_movie = ['소울', '러브 액츄얼리', '캡틴 마블', '모아나', '텍사스 전기톱 연쇄살인사건']
-        let recommendMovie = []
-        default_movie.forEach((movie_pk) => {
-          axios({
-            method: 'get',
-            url: `http://127.0.0.1:8000/movies/movie_recommend/${movie_pk}/`
-            })
-            .then(res => {
-              recommendMovie.push(res.data)
-            })
-            .catch(err => {
-              console.log(err)
-            })
+    function get_default_movie(movie_title) {
+        return axios ({
+          method: 'get',
+          url: `http://127.0.0.1:8000/movies/movie_recommend/${movie_title}/`
           })
-      this.$store.dispatch('GET_RECOMMEND_MOVIES', recommendMovie)
+      }
+    if (this.recommend_movie_list.length != 5) {
+      const default_movie = ['소울', '러브 액츄얼리', '캡틴 마블', '모아나', '텍사스 전기톱 연쇄살인사건']
+      let recommendMovie = []
+
+      
+      Promise.all(default_movie.map(get_default_movie)).then(res => { 
+        console.log('이해가 안되네?', res)
+        res.forEach((movies) => {
+          recommendMovie.push(movies.data)
+        this.$router.commit('GET_RECOMMEND_MOVIES', recommendMovie)
+        })
+      })
     }
   }
 }

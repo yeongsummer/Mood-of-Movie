@@ -1,22 +1,18 @@
 <template>
   <div class="container">
-    <form v-on:submit.prevent="createComment">
-      <div class="row">
-        <p>댓글</p>
-        <v-textarea
-          id="content"
-          label="댓글 달기"
-          auto-grow
-          outlined
-          rows="2"
-          row-height="15"
-          v-model="content"
-        ></v-textarea>
-        <div class="col-4 d-flex align-items-center">
-          <button type="submit" class="btn btn-pink font-1-2em">등록</button>
-        </div>
-      </div>
-    </form>
+    <b>댓글</b>
+    <p>{{comments.count}}</p>
+    <v-textarea
+      style="width: 100%;"
+      id="content"
+      auto-grow
+      outlined
+      rows="2"
+      row-height="15"
+      v-model="content"
+      color='green darken-1'
+      @keypress.enter="createComment"
+    ></v-textarea>
   </div>
 </template>
 
@@ -33,6 +29,7 @@
     computed: {
     ...mapState([
       'nickname',
+      'comments'
       ])
     },
     props: {
@@ -49,7 +46,6 @@
         return config
       },
       createComment: function () {
-
         const commentItem = {
           content: this.content
         }

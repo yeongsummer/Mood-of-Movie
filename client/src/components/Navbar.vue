@@ -7,14 +7,12 @@
     >
       <v-spacer></v-spacer>
 
-      <div class="d-flex align-center">
+      <div id="logo" class="d-flex align-center" @click="goMain()">
         <v-img
-          alt="Vuetify Logo"
           class="shrink mr-2"
           contain
-          src="https://cdn.vuetifyjs.com/images/logos/vuetify-logo-dark.png"
+          src='@/assets/logo.png'
           transition="scale-transition"
-          width="40"
         />
       </div>
       <v-spacer></v-spacer>
@@ -235,7 +233,6 @@ export default {
       'login',
       'logout',
     ]),
-
     signup: function () {
       axios({
         method: 'post',
@@ -262,7 +259,9 @@ export default {
           console.log(err)
         })
     },
-
+    goMain: function() {
+      this.$router.push({name: 'MovieList'})
+    }
   },
   computed: {
     ...mapState([
@@ -272,6 +271,7 @@ export default {
       'config'
     ])
   },
+
 }
 </script>
 
@@ -293,5 +293,14 @@ export default {
 
 #card {
   border: 3px solid #A5D6A7;
+
+#logo {
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%, 0%);
+}
+
+#logo:hover{
+  cursor: pointer; 
 }
 </style>
