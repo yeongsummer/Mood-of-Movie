@@ -83,13 +83,13 @@ def movie_ranking():
         movies.append(movie_obj)
     return movies
 
-# @api_view(['GET'])
-# @permission_classes([AllowAny])
-# def movie_detail(request, movie_pk):
-#     movie = get_object_or_404(Movie, pk=movie_pk)
-#     if request.method == 'GET':
-#         serializer = MovieSerializer(movie)
-#         return Response(serializer.data)
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def movie_detail(request, movie_title):
+    movie = get_object_or_404(Movie, title=movie_title)
+    if request.method == 'GET':
+        serializer = MovieSerializer(movie)
+        return Response(serializer.data)
 
 
 @api_view(['GET', 'POST'])

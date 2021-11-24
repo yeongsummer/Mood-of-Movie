@@ -20,7 +20,7 @@ export default new Vuex.Store({
     followings: [],
     likeMovieList: [],
     movie_ranking: [],
-
+    my_reviews: [],
   },
   getters: {
   },
@@ -63,10 +63,19 @@ export default new Vuex.Store({
       state.userPk = data.id
       state.nickname = data.nickname
     },
-    UPDATEFOLLOW: function (state, data) {
+    UPDATEFOLLOWER: function (state, data) {
       state.followers = data.followers
+    },
+    UPDATEFOLLOWING: function (state, data) {
       state.followings = data.followings
-      state.likeMovieList = data.likeMovieList
+    },
+    UPDATELIEKMOVIE: function (state, data) {
+      // console.log(data.like_movies)
+      state.likeMovieList = data.like_movies
+    },
+    UPDATEMYREVIEW: function (state, data) {
+      // console.log(data)
+      state.my_reviews = data.my_reviews
     },
     ADDFOLLOW: function (state, user) {
       state.followers.push(user)
@@ -173,6 +182,7 @@ export default new Vuex.Store({
       commit('ISLOGIN', false)
       commit('USERINFO', {'id': '', 'nickname': ''})
       localStorage.removeItem('jwt')
+      router.push({ name: 'MovieList'})
     },
     changepassword({ state }, changepasswordData) {
       const token = localStorage.getItem('jwt')
@@ -188,29 +198,56 @@ export default new Vuex.Store({
         })
         .catch(err => console.error(err))
     },
-    changenickname({ state, commit }, nickname) {
-      axios({
-        method: 'put',
-        url: `http://127.0.0.1:8000/accounts/${state.userPk}/user_profile_update_delete/`,
-        data: {'nickname': nickname},
-      })
-      .then(res => {
-        console.log(res)
-        const data = {
-          'id': state.userPk,
-          'nickname': res.data.nickname
-        }
-        commit('USERINFO', data)
-      })
-    },
-    get_follow: function ({ state, commit }, nickname) {
-      axios.get(`http://127.0.0.1:8000/accounts/${ nickname }/get_follow/`, state.config)
+    // changenickname({ state, commit }, nickname) {
+    //   axios({
+    //     method: 'put',
+    //     url: `http://127.0.0.1:8000/accounts/${state.userPk}/user_profile_update_delete/`,
+    //     data: {'nickname': nickname},
+    //   })
+    //   .then(res => {
+    //     console.log(res)
+    //     const data = {
+    //       'id': state.userPk,
+    //       'nickname': res.data.nickname
+    //     }
+    //     commit('USERINFO', data)
+    //   })
+    // },
+    get_followers: function ({ state, commit }, nickname) {
+      axios.get(`http://127.0.0.1:8000/accounts/${ nickname }/get_followers/`, state.config)
         .then((res) => {
-          console.log('이거', res)
-          const followers = res.data.followers
-          const followings = res.data.followings
-          const likeMovieList = res.data.likeMovieList
-          commit('UPDATEFOLLOW', {'followers': followers, 'followings': followings, 'likeMovieList': likeMovieList})
+          const followers = []
+          for (let follower of res.data) {
+            followers.push(follower.nickname)
+          }
+          commit('UPDATEFOLLOWER', {'followers': followers})
+        })
+        .catch((err) => {
+          console.log(err)
+        })
+    },
+    get_followings: function ({ state, commit }, nickname) {
+      axios.get(`http://127.0.0.1:8000/accounts/${ nickname }/get_followings/`, state.config)
+        .then((res) => {
+          const followings = []
+          for (let following of res.data) {
+            followings.push(following.nickname)
+          }
+          commit('UPDATEFOLLOWING', {'followings': followings})
+        })
+        .catch((err) => {
+          console.log(err)
+        })
+    },
+    get_like_movies: function ({ state, commit }, nickname) {
+      axios.get(`http://127.0.0.1:8000/accounts/${ nickname }/get_like_movies/`, state.config)
+        .then((res) => {
+          // console.log(res.data)
+          const like_movies = []
+          for (let movie of res.data) {
+            like_movies.push(movie)
+          }
+          commit('UPDATELIEKMOVIE', {'like_movies': like_movies})
         })
         .catch((err) => {
           console.log(err)
@@ -234,9 +271,17 @@ export default new Vuex.Store({
         console.log(err)
       })
     },
-    aa: function () {
-      console.log('aa')
-    }
+    getMyReview: function ({ state, commit }, nickname) {
+      axios.get(`http://127.0.0.1:8000/accounts/${ nickname }/review_list/`, state.config)
+        .then(res => {
+          // console.log(res)
+          const my_reviews = res.data
+          commit('UPDATEMYREVIEW', {'my_reviews': my_reviews})
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    },
   },
   plugins: [
     createPersistedState()

@@ -293,6 +293,7 @@ export default {
 
 #card {
   border: 3px solid #A5D6A7;
+}
 
 #logo {
   position: absolute;
