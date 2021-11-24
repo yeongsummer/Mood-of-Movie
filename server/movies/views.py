@@ -44,6 +44,7 @@ def popular_movie_list(request):
         return Response(serializers.data)
 
 
+@permission_classes([AllowAny])
 def movie_ranking():
     tmdbhelper = TMDBHelper('fc736c578445be44e87a385015c5331d')
     url = tmdbhelper.get_request_url(method=f'/movie/popular', language='ko', region='KR')
@@ -93,7 +94,6 @@ def movie_detail(request, movie_title):
 
 
 @api_view(['GET', 'POST'])
-@permission_classes([AllowAny])  # 추후에 삭제해야함!!!!
 def review_list_create(request, movie_pk):
     if request.method == 'GET':
         reviews = Review.objects.filter(movie_id=movie_pk)
@@ -212,7 +212,6 @@ def review_like(request, review_pk):
 
 
 @api_view(['GET'])
-@permission_classes([AllowAny])
 def movie_recommend(request, movie_title):
     print(movie_title)
     movie_list = recommend(movie_title)
@@ -256,17 +255,21 @@ def getMovieVideoKey(request, movie_pk):
     tmdbhelper = TMDBHelper('fc736c578445be44e87a385015c5331d')
     movie = Movie.objects.filter(pk=movie_pk)[0]
     url = tmdbhelper.get_request_url(method=f'/movie/{movie.movie_id}/videos')
-    print(url)
     response = requests.get(url).json()
     video_key = response['results'][-1]['key']
     movie = Movie.objects.filter(pk=movie_pk)[0]
     directors = movie.directors.all()
+    genres = movie.genres.all()
     director_list = []
+    genre_list = []
     for director in directors:
         director_list.append(director.name)
-    print('directors: ', director_list)
+    for genre in genres:
+        genre_list.append(genre.name)
+    print('genre_list: ', genre_list)
     context = {
         'video_key': video_key,
         'director_list': director_list,
+        'genre_list': genre_list,
     }
     return Response(context, status=status.HTTP_200_OK)

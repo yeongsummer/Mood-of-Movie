@@ -39,7 +39,7 @@
           </template>
           <v-card 
             id="card"
-            class="rounded-lg"
+            style="border-radius: 3px;"
             border-color="green lighten-3"
           >
             <v-card-title class="text-h5 green lighten-3 white--text">
