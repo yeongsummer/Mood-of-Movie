@@ -60,7 +60,7 @@ export default new Vuex.Store({
       state.followings = data.followings
     },
     ADDFOLLOW: function (state, user) {
-      state.followers.append(user)
+      state.followers.push(user)
     }
   },
   actions: {
@@ -178,18 +178,14 @@ export default new Vuex.Store({
         })
     },
     follow: function ({ state, commit }, nickname) {
-      let userId = -1
-      axios.get(`http://127.0.0.1:8000/accounts/${ nickname }/user/`, state.config)
-        .then((res) => {
-          userId = res.data.id
+      axios({
+        method: 'post',
+        url: `http://127.0.0.1:8000/accounts/${ nickname }/follow/`,
+        headers: state.config
         })
-        .catch((err) => {
-          console.log(err)
-        })
-      
-      axios.post(`http://127.0.0.1:8000/accounts/${ userId }/follow/`, null, state.config)
       .then(res => {
         res
+        console.log('여기!')
         // 여기를 닉네임으로? 객체로?
         commit('ADDFOLLOW', state.nickname)
       })
