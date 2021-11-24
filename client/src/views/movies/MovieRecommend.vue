@@ -1,8 +1,9 @@
 <template>
   <v-container style="width: 80vw; color:#2c3e50;">
     <!-- <h1 class="text-center" style="margin-bottom: 20px;">영화 추천</h1> -->
-    <span style="font-size:30px; font-weight: 700; margin-top: 5%;">{{nickname}}님을 위한 추천 영화</span>
+    <span v-if="isLogin" style="font-size:30px; font-weight: 700; margin-top: 5%;">{{nickname}}님을 위한 추천 영화</span>
     <v-img
+      v-if="isLogin"
       class="shrink mr-2"
       contain
       src='@/assets/movie.png'
@@ -11,6 +12,7 @@
       style="display: inline-block;"
     />
     <v-autocomplete
+      v-if="isLogin"
       v-model="select"
       :loading="loading"
       :items="items"
@@ -127,6 +129,7 @@ export default {
   },
   computed: {
     ...mapState([
+      'isLogin',
       'nickname',
       'recommend_movie_list',
       'movie_list'
@@ -149,7 +152,8 @@ export default {
       console.log(movie_title)
       axios({
         method: 'get',
-        url: `http://127.0.0.1:8000/movies/movie_recommend/${movie_title}/`
+        url: `http://127.0.0.1:8000/movies/movie_recommend/${movie_title}/`,
+        headers: this.setToken()
         })
         .then(res => {
           console.log(res)

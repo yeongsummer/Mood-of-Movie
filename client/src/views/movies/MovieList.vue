@@ -33,6 +33,7 @@ export default {
   },
   data: function () {
     return {
+      active_tab: 0,
       movies: {
         type: Array,
         required: true
@@ -47,7 +48,6 @@ export default {
   methods: {
   },
   created: function () {
-    this.active_tab = this.$router.params.active_tab
     if (this.movie_ranking.length != 20) {
       axios({
         method: 'get',
@@ -60,6 +60,9 @@ export default {
           console.log(err)
         })
     }
+  },
+  mounted() {
+    this.active_tab = 1;
   }
 }
 </script>

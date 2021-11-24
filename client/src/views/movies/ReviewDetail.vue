@@ -210,7 +210,7 @@
 
       axios({
         method: 'get',
-        url: `http://127.0.0.1:8000/movies/review_like/${this.review.id}/`,
+        url: `http://127.0.0.1:8000/movies/review_like/${this.review_pk}/`,
         headers: this.setToken()
         })
         .then(res => {
