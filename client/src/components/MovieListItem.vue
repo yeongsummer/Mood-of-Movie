@@ -2,16 +2,13 @@
   <v-col md="4">
     <div>
       <span class="ranking">{{ index+1 }}</span>
-      <v-card 
-        class="mx-auto"
-        width="250"
-        @click="[getMovieVideoKey(movie.id), dialog = true]"
+      <v-badge
+        left
       >
-      <div>
-        <v-img
-          :src="getImgUrl(movie.poster_path)"
-          :lazy-src="getImgUrl(movie.poster_path)"
-          height="380"
+        <v-card 
+          class="mx-auto"
+          width="250"
+          @click="[getMovieVideoKey(movie.id), dialog = true]"
         >
           <template v-slot:placeholder>
             <v-row class="fill-height ma-0" align="center" justify="center">

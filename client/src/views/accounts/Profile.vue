@@ -96,13 +96,13 @@
                     <v-card-text>
                       <v-text-field
                         outlined
-                        id="nickname"
+                        id="password"
                         label="*닉네임"
                         hint="특수문자를 제외한 한글/영문/숫자만 입력해주세요."
-                        name="nickname"
+                        name="password"
                         type="text"
                         color="green lighten-3"
-                        v-model="nickname"
+                        v-model="password"
                         :rules="[rules.required, rules.nickname]"
                       ></v-text-field>
                     </v-card-text>
@@ -230,43 +230,15 @@
       </v-slide-group>
     </div>
     <h2>{{ $route.params.nickname }} 님의 리뷰</h2>
-    <v-list
-      two-line
-    >
-      <template v-for="(review, index) in review_list">
-        <v-list-item
-          :key="review.id"
-        >
-          <v-list-item-content>
-            <v-rating
-              color="yellow darken-3"
-              background-color="grey darken-1"
-              empty-icon="$ratingFull"
-              half-increments
-              readonly
-              hover
-              size="15"
-              :value="review.rank/2"
-            ></v-rating>
-            <v-list-item-title v-text="review.title"></v-list-item-title>
-          </v-list-item-content>
-
-          <v-list-item-action>
-            <v-btn
-              text
-              @click="goReviewDetail(review.id)"
-            >
-              자세히보기
-            </v-btn>
-          </v-list-item-action>
-        </v-list-item>
-
-        <v-divider
-          v-if="index < review_list.length - 1"
-          :key="index"
-        ></v-divider>
-      </template>
-    </v-list>
+    <div v-if="my_reviews.length == 0" class="text-center">
+      <h1>리뷰가 아직 없어요!</h1>
+    </div>
+    <review-list-item
+      v-for="review in my_reviews" 
+      :key="review.id"
+      :review="review"
+      @click.native="goReviewDetail(review.id)"
+    />
   </v-container>
 </template>
 
@@ -274,18 +246,20 @@
 import { mapState } from 'vuex'
 import { mapActions } from 'vuex'
 import LikeMovieItem from '@/components/LikeMovieItem.vue'
+import ReviewListItem from '@/components/ReviewListItem'
 
 export default {
   name: 'Profile',
   components: {
     LikeMovieItem,
+    ReviewListItem,
   },
   data: function () {
     return {
-      review_list: [],
-      nickname: null,
       dialog1: false,
       dialog2: false,
+      password: null,
+      profileNickname: this.$route.params.nickname,
       rules: {
         required: value => !!value || '필수 입력 사항입니다.',
         nickname: value => !/[~!@#$%^&*()_+|<>?:{}]/.test(value) || "닉네임에는 특수문자를 사용할 수 없습니다.",
@@ -295,11 +269,9 @@ export default {
   methods: {
     ...mapActions([
       'moveToLink',
-      'get_follow',
+      'get_followers',
       'follow',
-      'changenickname',
-      'likeMovieList',
-      'aa'
+      'getMyReview',
     ]),
     goReviewDetail: function (review_pk) {
       this.$router.push({ name: "ReviewDetail", params: { review_pk: review_pk }})
@@ -310,12 +282,16 @@ export default {
       'nickname',
       'followers',
       'followings',
-      'profile_img'
+      'profile_img',
+      'likeMovieList',
+      'my_reviews'
     ])
   },
   created: function () {
-    // this.$store.dispatch('get_follow', this.route.params.nickname)
-    this.$store.dispatch('aa')
+    this.$store.dispatch('get_followers', this.profileNickname)
+    this.$store.dispatch('get_followings', this.profileNickname)
+    this.$store.dispatch('get_like_movies', this.profileNickname)
+    this.$store.dispatch('getMyReview', this.profileNickname)
   }
 }
 </script>
