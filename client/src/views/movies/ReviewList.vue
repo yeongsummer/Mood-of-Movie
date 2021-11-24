@@ -2,12 +2,13 @@
   <v-container style="width: 80vw">
     <v-toolbar
       id="toolbar"
-      color="green lighten-1"
       dark
+      color="green lighten-1"
     >
       <v-toolbar-title>Review</v-toolbar-title>
       <v-spacer></v-spacer>
       <v-autocomplete
+        v-if="nickname"
         v-model="select"
         :loading="loading"
         :items="items"
@@ -17,14 +18,14 @@
         flat
         hide-no-data
         hide-details
+        color='green darken-1'
         label="영화 제목을 검색해주세요 :)"
         solo-inverted
         @keypress.enter="searchMovie(search)"
       ></v-autocomplete>
-      <v-btn icon>
-        <v-icon>mdi-magnify</v-icon>
-      </v-btn>
+      <v-spacer></v-spacer>
       <v-btn
+        v-if="nickname"
         icon
         @click="goCreateReview()"
       >
@@ -33,7 +34,8 @@
         </v-icon>
       </v-btn>
     </v-toolbar>
-    <div class="text-center my-10">
+    <h1 v-if="!nickname" class="text-center">로그인을 해주세요!</h1>
+    <div v-if="nickname" class= "my-10">
       <span style="background-color:#C8E6C9; font-size:30px; font-weight: 700;">{{ movie_title }}</span>
     </div>
     <div v-if="review_list.length == 0" class="text-center">
@@ -82,7 +84,9 @@ export default {
   },
   computed: {
     ...mapState([
-      'movie_list'
+      'movie_list',
+      'nickname',
+      'isLogin'
     ])
   },
   watch: {
@@ -102,10 +106,10 @@ export default {
       axios({
         method: 'get',
         url: `http://127.0.0.1:8000/movies/review_list/${this.movie_pk}/`,
+        headers: this.setToken()
         })
         .then(res => {
           this.review_list = res.data
-          this.movie_pk =res.data[0].movie_id
         })
         .catch(err => {
           console.log(err)
@@ -133,13 +137,25 @@ export default {
       console.log(search)
       axios({
         method: 'get',
+        url: `http://127.0.0.1:8000/movies/movie_detail/${search}/`,
+        headers: this.setToken(),
+        })
+        .then(res => {
+          console.log('요기!!',res.data)
+          this.movie_pk = res.data.id
+        })
+        .catch(err => {
+          console.log(err)
+        })
+
+      axios({
+        method: 'get',
         url: `http://127.0.0.1:8000/movies/review_search/${search}/`,
         headers: this.setToken(),
         })
         .then(res => {
           this.review_list = res.data
           console.log(this.review_list)
-          this.movie_pk =res.data[0].movie_id
         })
         .catch(err => {
           console.log(err)
@@ -148,7 +164,8 @@ export default {
 
   },
   created: function () {
-    if (this.$route.params.movie_pk) {
+    if ((this.isLogin) && (this.$route.params.movie_pk)) {
+      console.log('오잉?????')
       this.flag = true
       this.movie_pk = this.$route.params.movie_pk
       this.movie_title = this.$route.params.movie_title

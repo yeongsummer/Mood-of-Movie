@@ -12,6 +12,8 @@ from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth import update_session_auth_hash
 from django.contrib import messages
+from movies.serializers import MovielistSerializer, ReviewlistSerializer
+from movies.models import Review
 # Create your views here.
 
 @api_view(['POST'])
@@ -95,11 +97,40 @@ def get_user(request):
 @api_view(['GET'])
 @authentication_classes([JSONWebTokenAuthentication])
 @permission_classes([IsAuthenticated])
-def get_follow(request, nickname):
+def get_followers(request, nickname):
     user = get_object_or_404(get_user_model(), nickname=nickname)
+    followers = user.followers.all()
+    serializer = UserSerializer(followers, many=True)
+    
+    return Response(serializer.data, status=status.HTTP_200_OK)
 
-    followers = user.followers
-    followings = user.followings
-    like_movies = user.like_movies
-    print(followings, followers)
-    return Response({ 'followers': followers, 'followings': followings, 'likeMovieList': like_movies })
+
+@api_view(['GET'])
+@authentication_classes([JSONWebTokenAuthentication])
+@permission_classes([IsAuthenticated])
+def get_followings(request, nickname):
+    user = get_object_or_404(get_user_model(), nickname=nickname)
+    followings = user.followings.all()
+    serializer = UserSerializer(followings, many=True)
+    
+    return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+@api_view(['GET'])
+@authentication_classes([JSONWebTokenAuthentication])
+@permission_classes([IsAuthenticated])
+def get_like_movies(request, nickname):
+    user = get_object_or_404(get_user_model(), nickname=nickname)
+    like_movies = user.like_movies.all()
+
+    serializer = MovielistSerializer(like_movies, many=True)
+    
+    return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+@api_view(['GET'])
+def get_review(request, nickname):
+    user = get_object_or_404(get_user_model(), nickname=nickname)
+    reviews = Review.objects.filter(user=user)
+    serializers = ReviewlistSerializer(reviews, many=True)
+    return Response(serializers.data)

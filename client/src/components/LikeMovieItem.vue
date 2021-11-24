@@ -21,12 +21,6 @@
         </template>
       </v-img>
     </div>
-    <div>
-      <v-btn icon :color="liked? 'pink':'grey'" @click.stop="movieLike(movie.id)">
-        <v-icon>mdi-heart</v-icon>
-      </v-btn>
-      <span>{{ like_count }}</span>
-    </div>
   </v-card>
   <v-dialog
       v-model="dialog"
@@ -78,9 +72,11 @@ import axios from 'axios'
 
 export default {
   name: "LikeMovieItem",
+  props: {
+    movie: Object,
+  },
   data: function () {
     return {
-      movie: {},
       dialog: false,
       movie_director: '',
       videoId:'',
