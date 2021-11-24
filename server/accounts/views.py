@@ -62,14 +62,17 @@ def follow(request, nickname):
             user.followers.remove(request.user)
         else:
             user.followers.add(request.user)
-    return HttpResponse(status=200)
+    context = {
+
+    }
+    return Response(context, status=status.HTTP_200_OK)
 
 
 @api_view(['GET'])
 @authentication_classes([JSONWebTokenAuthentication])
 @permission_classes([IsAuthenticated])
-def get_user(request, user_nickname):
-    user = get_object_or_404(get_user_model(), nickname=user_nickname)
+def get_user(request, nickname):
+    user = get_object_or_404(get_user_model(), nickname=nickname)
 
     return Response({ 'id': user.id, 'nickname': user.nickname })
 
@@ -77,8 +80,8 @@ def get_user(request, user_nickname):
 @api_view(['GET'])
 @authentication_classes([JSONWebTokenAuthentication])
 @permission_classes([IsAuthenticated])
-def get_follow(request, user_nickname):
-    user = get_object_or_404(get_user_model(), nickname=user_nickname)
+def get_follow(request, nickname):
+    user = get_object_or_404(get_user_model(), nickname=nickname)
 
     followers = user.followers
     followings = user.followings
