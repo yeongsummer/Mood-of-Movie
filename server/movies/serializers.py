@@ -7,14 +7,7 @@ class UserInfoSerializer(serializers.ModelSerializer):
     class Meta:
         model = get_user_model()
         fields = ('id', 'nickname','email')
-
-
-class AllMovielistSerializer(serializers.ModelSerializer):
-    
-    class Meta:
-        model = Movie
-        fields = ('title',)
-
+        
 
 class MovielistSerializer(serializers.ModelSerializer):
     

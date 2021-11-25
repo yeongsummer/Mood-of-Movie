@@ -1,5 +1,4 @@
-from django.http.response import JsonResponse
-from django.shortcuts import get_object_or_404, get_list_or_404
+from django.shortcuts import get_object_or_404
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
 from .serializers import (
@@ -10,12 +9,10 @@ from .serializers import (
     ReviewSerializer, 
     CommentlistSerializer,
     CommentSerializer,
-    AllMovielistSerializer
     )
 from rest_framework.response import Response
 from rest_framework import status
 from .models import Movie, Review, Comment, Genre, Actor, Director, Keyword
-from django.contrib.auth import get_user_model
 from tmdb import TMDBHelper
 import requests
 from .recommend import recommend
@@ -84,6 +81,7 @@ def movie_ranking():
         movies.append(movie_obj)
     return movies
 
+
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def movie_detail(request, movie_title):
@@ -127,6 +125,7 @@ def review_detail_update_delete(request, review_pk):
     elif request.method == 'DELETE':
         review.delete()
         return Response({ 'id': review_pk }, status=status.HTTP_204_NO_CONTENT)
+
 
 @api_view(['GET'])
 def review_search(request, search):
@@ -223,34 +222,7 @@ def movie_recommend(request, movie_title):
         return Response(serializers.data, status=status.HTTP_200_OK)
 
 
-# @api_view(['POST'])
-# def user_reviews(request, user_pk):
-#     user = get_object_or_404(get_user_model(), pk=user_pk)
-#     reviews = user.review_set.all()
-#     data = []
-#     reviews_pk = request.data
-#     for review_pk in reviews_pk:
-#         review = get_object_or_404(Review, pk=review_pk)
-#         serializer = ReviewSerializer(review)
-#         data.append(serializer.data)
-#     return Response(data)
-
-
-# @api_view(['POST'])
-# def user_comments(request, user_pk):
-#     user = get_object_or_404(get_user_model(), pk=user_pk)
-#     comments = user.comment_set.all()
-#     data = []
-#     comments_pk = request.data
-#     for comment_pk in comments_pk:
-#         comment = get_object_or_404(Comment, pk=comment_pk)
-#         serializer = CommentSerializer(comment)
-#         data.append(serializer.data)
-#     return Response(data)
-
-
 @api_view(['GET'])
-@permission_classes([AllowAny])
 def getMovieVideoKey(request, movie_pk):
     tmdbhelper = TMDBHelper('fc736c578445be44e87a385015c5331d')
     movie = Movie.objects.filter(pk=movie_pk)[0]
@@ -266,7 +238,6 @@ def getMovieVideoKey(request, movie_pk):
         director_list.append(director.name)
     for genre in genres:
         genre_list.append(genre.name)
-    print('genre_list: ', genre_list)
     context = {
         'video_key': video_key,
         'director_list': director_list,

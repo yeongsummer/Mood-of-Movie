@@ -1,7 +1,7 @@
 <template>
   <v-container style="width: 80vw; color:#2c3e50;">
     <!-- <h1 class="text-center" style="margin-bottom: 20px;">영화 추천</h1> -->
-    <span v-if="isLogin" style="font-size:30px; font-weight: 700; margin-top: 5%;">{{nickname}}님을 위한 추천 영화</span>
+    <span v-if="isLogin" style="font-size:35px; font-weight: 700; margin-top: 5%;">{{nickname}}님을 위한 추천 영화</span>
     <v-img
       v-if="isLogin"
       class="shrink mr-2"
@@ -18,7 +18,7 @@
       :items="items"
       :search-input.sync="search"
       cache-items
-      class="mx-5 my-5 "
+      class="mx-5 my-5"
       flat
       hide-no-data
       hide-details
@@ -30,8 +30,8 @@
       v-if="flag"
       :movieList="recommended_movies"
     />
-    <div class="subtitle">
-      <span style="font-size:30px; font-weight: 700">나를 힐링시켜줄 음악 영화</span>
+    <div class="subtitle_container">
+      <span class="subtitle">나를 힐링시켜줄 음악 영화</span>
       <v-img
         class="shrink mr-2"
         contain
@@ -44,8 +44,8 @@
     <recommend-List
       :movieList="recommend_movie_list[0]"
     />
-    <div class="subtitle">
-      <span style="font-size:30px; font-weight: 700">다가오는 크리스마스는 영화보면서 방콕 어때요?</span>
+    <div class="subtitle_container">
+      <span class="subtitle">다가오는 크리스마스는 영화보면서 방콕 어때요?</span>
       <v-img
         class="shrink mr-2"
         contain
@@ -58,8 +58,8 @@
     <recommend-List
       :movieList="recommend_movie_list[1]"
     />
-    <div class="subtitle">
-      <span style="font-size:30px; font-weight: 700">시원한 액션보면서 스트레스를 날리자</span>
+    <div class="subtitle_container">
+      <span class="subtitle">시원한 액션보면서 스트레스를 날리자</span>
       <v-img
         class="shrink mr-2"
         contain
@@ -72,8 +72,8 @@
     <recommend-List
       :movieList="recommend_movie_list[2]"
     />
-    <div class="subtitle">
-      <span style="font-size:30px; font-weight: 700">겨울이지만 바다는 보고싶어</span>
+    <div class="subtitle_container">
+      <span class="subtitle">겨울이지만 바다는 보고싶어</span>
       <v-img
         class="shrink mr-2"
         contain
@@ -86,8 +86,8 @@
     <recommend-List
       :movieList="recommend_movie_list[3]"
     />
-    <div class="subtitle">
-      <span style="font-size:30px; font-weight: 700">숨막히는 긴장감을 느껴봐 </span>
+    <div class="subtitle_container">
+      <span class="subtitle">숨막히는 긴장감을 느껴봐 </span>
       <v-img
         class="shrink mr-2"
         contain
@@ -200,11 +200,17 @@ export default {
 </script>
 
 <style scoped>
-  .maintitle {
-    margin-top: 5%;
-  }
-  .subtitle {
-    margin-top: 15%;
-    margin-bottom: 2%;
-  }
+.maintitle {
+  margin-top: 5%;
+}
+
+.subtitle_container {
+  margin-top: 15%;
+  margin-bottom: 2%;
+}
+
+.subtitle {
+  font-size:35px; 
+  font-weight: 700
+}
 </style>

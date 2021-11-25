@@ -1,7 +1,7 @@
 <template>
   <v-container style="width: 80vw;">
     <div style="font-size:25px; font-weight:700;">
-      <span style="background-color:#C8E6C9; font-size:30px;">{{ movie_title }}</span>을 보고 난 후기를 남겨주세요 🙂
+      <span style="text-shadow:3px 4px #aed3aa; font-size:30px;">{{ movie_title }}</span>을 보고 난 후기를 남겨주세요 🙂
     </div>
       <div class="createreview_container">
         <div class="row">

@@ -1,31 +1,37 @@
 <template>
   <v-col md="4">
     <div>
-      <span class="ranking">{{ index+1 }}</span>
-      <v-badge
-        left
-      >
-        <v-card 
-          class="mx-auto"
-          width="250"
-          @click="[getMovieVideoKey(movie.id), dialog = true]"
-        >
-          <template v-slot:placeholder>
-            <v-row class="fill-height ma-0" align="center" justify="center">
-              <v-progress-circular
-                indeterminate
-                color="grey lighten-5"
-              ></v-progress-circular>
-            </v-row>
-          </template>
-        </v-img>
-      </div>
-      <v-btn icon :color="liked? 'pink':'grey'" @click.stop="movieLike(movie.id)">
-        <v-icon>mdi-heart</v-icon>
-      </v-btn>
-      <!-- <v-spacer></v-spacer> -->
-      <span>{{ like_count }}</span>
-      </v-card>
+      <v-row>
+        <v-col style="max-width:110px; position: relative;">
+          <span class="ranking" style="text-shadow:4px 5px #f1cb70">{{ index+1 }}</span>
+        </v-col>
+        <v-col>
+          <v-card 
+            style="width:15vw; margin-top:30px; margin-bottom:30px;"
+            @click="[getMovieVideoKey(movie.id), dialog = true]"
+          >
+            <v-img
+              :src="getImgUrl(movie.poster_path)"
+              :lazy-src="getImgUrl(movie.poster_path)"
+              style="height:45vh;"
+            >
+              <template v-slot:placeholder>
+                <v-row class="fill-height ma-0" align="center" justify="center">
+                  <v-progress-circular
+                    indeterminate
+                    color="grey lighten-5"
+                  ></v-progress-circular>
+                </v-row>
+              </template>
+            </v-img>
+            <v-btn icon :color="liked? 'pink':'grey'" @click.stop="movieLike(movie.id)">
+              <v-icon>mdi-heart</v-icon>
+            </v-btn>
+            <!-- <v-spacer></v-spacer> -->
+            <span>{{ like_count }}</span>
+          </v-card>
+        </v-col>
+      </v-row>
     </div>
     <v-dialog
       v-model="dialog"
@@ -143,6 +149,7 @@ export default {
       axios({
         method: 'get',
         url: `http://127.0.0.1:8000/movies/movie_video/${movie_pk}/`,
+        headers: this.setToken()
         })
         .then(res => {
           this.videoId = res.data.video_key
@@ -194,8 +201,13 @@ export default {
 
 <style scoped>
 .ranking {
-  font-size: 3rem;
+  position: absolute;
+  right: 0;
+  top: 30px;
+  margin-left: 10px;
+  font-size: 4.5rem;
   font-weight: 700;
+  color: rgb(61, 53, 7);
 }
 .detail {
   background-color:#EFE8D8;

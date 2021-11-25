@@ -35,8 +35,8 @@
       </v-btn>
     </v-toolbar>
     <h1 v-if="!nickname" class="text-center">로그인을 해주세요!</h1>
-    <div v-if="nickname" class= "my-10">
-      <span style="background-color:#C8E6C9; font-size:30px; font-weight: 700;">{{ movie_title }}</span>
+    <div v-if="nickname" class= "my-10 mx-5 text-center">
+      <span style="text-shadow:3px 4px #aed3aa; font-size:40px; font-weight: 700;">{{ movie_title }}</span>
     </div>
     <div v-if="review_list.length == 0" class="text-center">
       <div v-if="flag">
@@ -58,7 +58,6 @@
 import ReviewListItem from '@/components/ReviewListItem'
 import axios from 'axios'
 import { mapState } from 'vuex'
-// import _ from 'lodash'
 
 export default {
   name: 'ReviewList',
@@ -123,7 +122,6 @@ export default {
     },
     querySelections (v) {
       this.loading = true
-      // Simulated ajax query
       setTimeout(() => {
         this.items = this.movie_list.filter(e => {
           return (e || '').toLowerCase().indexOf((v || '').toLowerCase()) > -1
@@ -134,7 +132,7 @@ export default {
     searchMovie(search) {
       this.movie_title = search
       this.flag = true
-      console.log(search)
+
       axios({
         method: 'get',
         url: `http://127.0.0.1:8000/movies/movie_detail/${search}/`,
@@ -161,11 +159,9 @@ export default {
           console.log(err)
         })
     }
-
   },
   created: function () {
     if ((this.isLogin) && (this.$route.params.movie_pk)) {
-      console.log('오잉?????')
       this.flag = true
       this.movie_pk = this.$route.params.movie_pk
       this.movie_title = this.$route.params.movie_title
@@ -176,7 +172,6 @@ export default {
 </script>
 
 <style scoped>
-
 .background {
   background-size: 100% 100%;
 }
