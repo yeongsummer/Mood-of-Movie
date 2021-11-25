@@ -19,8 +19,7 @@
 
       <span v-if="isLogin">
         <v-btn text @click="logout()">Logout</v-btn>
-        <!-- 여기에 닉네임 넣는 방법!!! -->
-        <v-btn icon @click="moveToLink({ name: 'Profile', params: {nickname: 'aa'} })">
+        <v-btn icon @click="moveToLink({ name: 'Profile', params: {nickname: nickname} })">
           <v-icon>mdi-account</v-icon>
         </v-btn>
       </span>
@@ -178,8 +177,6 @@
           </v-card>
         </v-dialog>
       </span>
-    <v-btn text @click="test()">Test</v-btn>
-    
     </v-app-bar>
 
     <v-main>
@@ -247,17 +244,6 @@ export default {
         alert('회원가입 실패 : 회원 정보를 확인해주세요.')
         console.log(err)
       })
-    },
-
-    test: function () {
-      console.log(this.userPk)
-      axios.get(`http://127.0.0.1:8000/accounts/${this.userPk}/user_profile_update_delete/`, this.config)
-        .then((res) => {
-          console.log(res)
-        })
-        .catch((err) => {
-          console.log(err)
-        })
     },
     goMain: function() {
       this.$router.push({name: 'MovieList'})

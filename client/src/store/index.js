@@ -11,7 +11,7 @@ export default new Vuex.Store({
     nickname: null,
     isLogin: false,
     userPk: null,
-    profile_img: '@/assets/default.jpg',
+    profile_img: false,
     comments: [],
     config: null,
     movie_list: [],
@@ -63,6 +63,10 @@ export default new Vuex.Store({
       state.userPk = data.id
       state.nickname = data.nickname
     },
+    USERIMGINFO: function (state, data) {
+      state.userPk = data.id
+      state.profile_img = data.profile_img
+    },
     UPDATEFOLLOWER: function (state, data) {
       state.followers = data.followers
     },
@@ -79,7 +83,7 @@ export default new Vuex.Store({
     },
     ADDFOLLOW: function (state, user) {
       state.followers.push(user)
-    }
+    },
   },
   actions: {
     moveToLink({ state }, routeObject) {
@@ -118,7 +122,6 @@ export default new Vuex.Store({
 
         axios.get(`http://127.0.0.1:8000/accounts/user/`, state.config)
           .then((res) => {
-            // console.log(res.data)
             const id = res.data.id
             const nickname = res.data.nickname
             // console.log(nickname)
@@ -169,7 +172,7 @@ export default new Vuex.Store({
           })
       }
       Promise.all(default_movie.map(get_default_movie)).then(res => { 
-        console.log('이해가 안되네?', res)
+        // console.log('이해가 안되네?', res)
         res.forEach((movies) => {
           recommendMovie.push(movies.data)
         commit('GET_RECOMMEND_MOVIES', recommendMovie)
@@ -185,34 +188,23 @@ export default new Vuex.Store({
       router.push({ name: 'MovieList'})
     },
     changepassword({ state }, changepasswordData) {
+      state
       const token = localStorage.getItem('jwt')
       const config = {
-        headers: {
           Authorization: `JWT ${token}`
-       }
       }
-      axios.post(`http://127.0.0.1:8000/accounts/${ state.userPk }/password/`, changepasswordData, config)
-        .then(() => {
-          alert('비밀번호가 변경되었습니다.')
-          router.push({ name: 'Profile'})
-        })
-        .catch(err => console.error(err))
+      axios({
+        method: 'put',
+        url: 'http://127.0.0.1:8000/accounts/password/',
+        data: changepasswordData,
+        headers: config
+      })
+      .then((res) => {
+        console.log(res)
+        alert('비밀번호가 변경되었습니다.')
+      })
+      .catch(err => console.error(err))
     },
-    // changenickname({ state, commit }, nickname) {
-    //   axios({
-    //     method: 'put',
-    //     url: `http://127.0.0.1:8000/accounts/${state.userPk}/user_profile_update_delete/`,
-    //     data: {'nickname': nickname},
-    //   })
-    //   .then(res => {
-    //     console.log(res)
-    //     const data = {
-    //       'id': state.userPk,
-    //       'nickname': res.data.nickname
-    //     }
-    //     commit('USERINFO', data)
-    //   })
-    // },
     get_followers: function ({ state, commit }, nickname) {
       axios.get(`http://127.0.0.1:8000/accounts/${ nickname }/get_followers/`, state.config)
         .then((res) => {
@@ -255,13 +247,28 @@ export default new Vuex.Store({
     },
     follow: function ({ state, commit }, nickname) {
       axios.post(`http://127.0.0.1:8000/accounts/${ nickname }/follow/`, null, state.config)
-      .then(response => {
-        response
-        axios.get(`http://127.0.0.1:8000/accounts/${ nickname }/get_follow/`, state.config)
+      .then(res => {
+        res
+        // get_followers
+        axios.get(`http://127.0.0.1:8000/accounts/${ nickname }/get_followers/`, state.config)
         .then((res) => {
-          const followers = res.data.followers
-          const followings = res.data.followings
-          commit('UPDATEFOLLOW', {'followers': followers, 'followings': followings})
+          const followers = []
+          for (let follower of res.data) {
+            followers.push(follower.nickname)
+          }
+          commit('UPDATEFOLLOWER', {'followers': followers})
+        })
+        .catch((err) => {
+          console.log(err)
+        })
+        // get_followings
+        axios.get(`http://127.0.0.1:8000/accounts/${ nickname }/get_followings/`, state.config)
+        .then((res) => {
+          const followings = []
+          for (let following of res.data) {
+            followings.push(following.nickname)
+          }
+          commit('UPDATEFOLLOWING', {'followings': followings})
         })
         .catch((err) => {
           console.log(err)

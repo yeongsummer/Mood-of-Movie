@@ -27,3 +27,9 @@ class UserSerializer(serializers.ModelSerializer):
     #         raise ValidationError(error)
 
     #     return data
+
+
+class UserImgSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('profile_img', 'id')

@@ -5,7 +5,6 @@
       id="nav"
       color="basil"
       grow
-      v-model="active_tab"
     >
       <v-tabs-slider color="green lighten-1"></v-tabs-slider>
       <v-tab
