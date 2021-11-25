@@ -1,16 +1,18 @@
 <template>
   <v-container style="width: 80vw; color:#2c3e50;">
     <!-- <h1 class="text-center" style="margin-bottom: 20px;">영화 추천</h1> -->
-    <span v-if="isLogin" style="font-size:35px; font-weight: 700; margin-top: 5%;">{{nickname}}님을 위한 추천 영화</span>
-    <v-img
-      v-if="isLogin"
-      class="shrink mr-2"
-      contain
-      src='@/assets/movie.png'
-      transition="scale-transition"
-      height='40'
-      style="display: inline-block;"
-    />
+    <div style="margin-top: 50px;">
+      <span class="subtitle" v-if="isLogin">{{nickname}} 님을 위한 추천 영화</span>
+      <v-img
+        v-if="isLogin"
+        class="shrink mr-2"
+        contain
+        src='@/assets/movie.png'
+        transition="scale-transition"
+        height='40'
+        style="display: inline-block;"
+      />
+    </div>
     <v-autocomplete
       v-if="isLogin"
       v-model="select"
@@ -210,7 +212,8 @@ export default {
 }
 
 .subtitle {
-  font-size:35px; 
+  color:#484848;
+  font-size:30px; 
   font-weight: 700
 }
 </style>

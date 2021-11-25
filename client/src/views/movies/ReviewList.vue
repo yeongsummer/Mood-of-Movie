@@ -1,5 +1,5 @@
 <template>
-  <v-container style="width: 80vw">
+  <v-container style="width: 80vw; color:#484848;">
     <v-toolbar
       id="toolbar"
       dark

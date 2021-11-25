@@ -1,5 +1,5 @@
 <template>
-  <v-container style="width: 80vw;">
+  <v-container style="width: 80vw; color:#484848;">
     <v-row id="profile-box" class="mx-auto" align="center" justify="center" justify-center>
       <v-col
         cols="3"
@@ -298,9 +298,14 @@
           style="display: inline-block;"
         />
       </div>
-      <div 
-        v-if="likeMovieList.length == 0" 
-        class="text-center"
+       <div v-if="likeMovieList.length == 0" class="text-center">
+        <h1>찜한 영화가 아직 없어요!</h1>
+      </div>
+      <div v-show="likeMovieList.length" class="background" :style="{'background-image': 'url('+require('@/assets/movie_list.png')+')'}">
+        <v-slide-group
+          class="pa-4"
+          active-class="success"
+          show-arrows
         >
         <h1>찜한 영화가 아직 없어요!</h1>
       </div>

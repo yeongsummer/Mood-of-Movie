@@ -40,27 +40,50 @@
           >
           </iframe>
         </div>
-        <v-card-title>
-          <span class="text-h5">{{ movie.title }}</span>
-        </v-card-title>
-        <template >
-          <v-card-text v-for="(director,index) in directors" :key=index>
-            <p>{{ director }}</p>
-            <p>{{ movie.vote_average }} / 10</p>
-            <div>
-              {{ movie.overview }}
+        <v-card-text style="padding-top:15px; padding-bottom:25px;">
+          <span style="font-size:35px; font-weight: 700; color:#484848;">{{ movie.title }}</span>
+        </v-card-text>
+        <v-card-text>
+          <div class="detail">
+            개봉일: {{ movie.release_date | moment('YYYY-MM-DD') }}
+          </div>
+          <div class="detail">
+            장르:
+            <span v-for="(genre, index) in genres" :key=index style="margin: 2px;">
+              {{genre}}
+            </span>
+          </div>
+          <div class="director">
+            감독: 
+            <span v-for="(director,index) in directors" :key=index> 
+              {{ director }}
+            </span>
+          </div>
+        </v-card-text>
+        <v-card-text style="margin-bottom: 10px;">
+          <div>
+            <div id="tmdb" style="font-size:20px; font-weight: 700; ">
+              TMDB
             </div>
-          </v-card-text>
-        </template>
-        <v-spacer></v-spacer>
+            <span  style="font-size:20px; font-weight: 700; color: #484848; margin-left: 5px;">{{ movie.vote_average }}</span> / 10
+          </div>
+        </v-card-text>
+        <v-card-text style="padding-bottom:10px;">
+          <div style="color: #484848;">
+            {{ movie.overview }}
+          </div>
+        </v-card-text>
         <v-card-actions>
-          <v-btn
-            text
-            color="teal accent-4"
-            @click="goReview(movie.id)"
-          >
-            리뷰보러가기
-          </v-btn>
+          <v-spacer></v-spacer>
+            <v-btn
+              text
+              color='green darken-3' 
+              class="white--text mr-2" 
+              depressed
+              @click="goReview(movie.id, movie.title)"
+            >
+              리뷰보러가기 >
+            </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -81,9 +104,6 @@ export default {
       movie_director: '',
       videoId:'',
       directors: [],
-      liked: false,
-      like_count: 0,
-      review_list: [],
     }
   },
   computed: {
@@ -108,26 +128,11 @@ export default {
       axios({
         method: 'get',
         url: `http://127.0.0.1:8000/movies/movie_video/${movie_pk}/`,
+        headers: this.setToken()
         })
         .then(res => {
           this.videoId = res.data.video_key
           this.directors = res.data.director_list
-        })
-        .catch(err => {
-          console.log(err)
-        })
-    },
-    movieLike: function (movie_pk) {
-      this.liked = !this.liked
-      axios({
-        method: 'post',
-        url: `http://127.0.0.1:8000/movies/movie_like/${movie_pk}/`,
-        headers: this.setToken()
-        })
-        .then(res => {
-          console.log(res)
-          this.like_count = res.data.like_count
-          console.log(this.like_count)
         })
         .catch(err => {
           console.log(err)
@@ -141,5 +146,34 @@ export default {
 </script>
 
 <style>
+.detail {
+  background-color:#EFE8D8;
+  display: inline;
+  border-radius: 5px;
+  margin: 5px;
+  padding: 6px 4px 4px 4px;
+  font-weight: 600;
+  color: #484848;
+}
 
+.director {
+  background-color:#C8E6C9;
+  display: inline;
+  border-radius: 5px;
+  margin: 5px;
+  padding: 6px 4px 4px 4px;
+  font-weight: 600;
+  color: #484848;
+}
+
+#tmdb {
+  font-size:20px; 
+  font-weight: 700;
+  background-color:#150e68;
+  color: white;
+  display: inline;
+  border-radius: 4px;
+  margin: 5px;
+  padding: 8px 2px 3px 7px;
+}
 </style>
