@@ -1,5 +1,5 @@
 <template>
-  <v-container style="width: 80vw;">
+  <v-container style="width: 80vw; color:#484848;">
     <div class="review_container">
       <div style="font-size:25px; font-weight:700; margin-bottom:30px;">
         {{reviewUsername}}님의 <span style="text-shadow:3px 4px #aed3aa; font-size:30px;">{{ movie_title }}</span> 리뷰

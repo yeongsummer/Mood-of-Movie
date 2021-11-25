@@ -46,6 +46,7 @@ export default {
   border: 2px solid #ebebec;
   border-radius: 4px;
   padding: 12px 8px;
+  color:#484848;
 
 }
 
@@ -61,7 +62,6 @@ export default {
   margin-left: 10px;
   font-weight: bold;
   font-size: 1.5rem;
-  color: #0F172A;
 }
 
 .review_info--desc {

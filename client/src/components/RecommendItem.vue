@@ -45,8 +45,8 @@
           >
           </iframe>
         </div>
-        <v-card-text style="padding-bottom:15px;">
-          <span class="text-h4 font-weight-bold" style="color:#484848;">{{ movie.title }}</span>
+        <v-card-text style="padding-top:15px; padding-bottom:25px;">
+          <span style="font-size:35px; font-weight: 700; color:#484848;">{{ movie.title }}</span>
         </v-card-text>
         <v-card-text>
           <div class="detail">
@@ -78,19 +78,18 @@
             {{ movie.overview }}
           </div>
         </v-card-text>
-        <v-spacer></v-spacer>
         <v-card-actions>
-          <div align="right">
+          <v-spacer></v-spacer>
             <v-btn
               v-if="isLogin"
-              color='green lighten-1' 
+              text
+              color='green darken-3' 
               class="white--text mr-2" 
               depressed
               @click="goReview(movie.id, movie.title)"
             >
-              리뷰보러가기
+              리뷰보러가기 >
             </v-btn>
-          </div>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -182,7 +181,7 @@ export default {
   display: inline;
   border-radius: 5px;
   margin: 5px;
-  padding: 6px;
+  padding: 6px 4px 4px 4px;
   font-weight: 600;
   color: #484848;
 }
@@ -192,7 +191,7 @@ export default {
   display: inline;
   border-radius: 5px;
   margin: 5px;
-  padding: 6px;
+  padding: 6px 4px 4px 4px;
   font-weight: 600;
   color: #484848;
 }
@@ -205,6 +204,6 @@ export default {
   display: inline;
   border-radius: 4px;
   margin: 5px;
-  padding: 3px 4px 5px 7px;
+  padding: 8px 2px 3px 7px;
 }
 </style>

@@ -110,9 +110,9 @@ def get_user(request):
 def get_followers(request, nickname):
     user = get_object_or_404(get_user_model(), nickname=nickname)
     followers = user.followers.all()
-    serializer = UserSerializer(followers, many=True)
+    serializers = UserSerializer(followers, many=True)
     
-    return Response(serializer.data, status=status.HTTP_200_OK)
+    return Response(serializers.data, status=status.HTTP_200_OK)
 
 
 @api_view(['GET'])
@@ -121,9 +121,9 @@ def get_followers(request, nickname):
 def get_followings(request, nickname):
     user = get_object_or_404(get_user_model(), nickname=nickname)
     followings = user.followings.all()
-    serializer = UserSerializer(followings, many=True)
+    serializers = UserSerializer(followings, many=True)
     
-    return Response(serializer.data, status=status.HTTP_200_OK)
+    return Response(serializers.data, status=status.HTTP_200_OK)
 
 
 @api_view(['GET'])
@@ -133,9 +133,9 @@ def get_like_movies(request, nickname):
     user = get_object_or_404(get_user_model(), nickname=nickname)
     like_movies = user.like_movies.all()
 
-    serializer = MovielistSerializer(like_movies, many=True)
+    serializers = MovielistSerializer(like_movies, many=True)
     
-    return Response(serializer.data, status=status.HTTP_200_OK)
+    return Response(serializers.data, status=status.HTTP_200_OK)
 
 
 @api_view(['GET'])
