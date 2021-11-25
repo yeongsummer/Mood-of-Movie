@@ -3,7 +3,7 @@ from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
-from .serializers import UserSerializer
+from .serializers import UserSerializer, UserImgSerializer
 from django.contrib.auth import get_user_model
 from django.http import HttpResponse
 from rest_framework.decorators import authentication_classes, permission_classes
@@ -14,6 +14,7 @@ from django.contrib.auth import update_session_auth_hash
 from django.contrib import messages
 from movies.serializers import MovielistSerializer, ReviewlistSerializer
 from movies.models import Review
+
 # Create your views here.
 
 @api_view(['POST'])
@@ -54,37 +55,46 @@ def user_profile_update_delete(request, user_pk):
         return Response({ 'id': user_pk }, status=status.HTTP_204_NO_CONTENT)
 
 
-# @api_view(['POST'])
-# def password(request, user_pk):
-#     user = get_object_or_404(get_user_model(), pk=user_pk)
+@api_view(['PUT'])
+def password(request):
+    print('실행')
+    print(request.data)
+    user = request.user
 
-#     if request.method == 'POST':
-#         form = PasswordChangeForm(request.user, request.POST)
-#         if form.is_valid():
-#             user = form.save()
-#             update_session_auth_hash(request, user)
-#             messages.success(request, '비밀번호가 변경되었습니다.')
-#             return HttpResponse(status=200)
-#         else:
-#             messages.error(request, '비밀번호 변경 실패')
-#     else:
-#         form = PasswordChangeForm(request.user)
-    
-#     context = {
-#         'form': form
-#     }
-#     return Response(context)
+    old_password = request.data['old_password']
+    if old_password is not None:
+        password_match = user.check_password(old_password) #현재 비번이 맞는 지 체크
+        if password_match:
+            new_password1 = request.data['new_password1']
+            if new_password1 is not None:
+                user.set_password(new_password1)
+                user.save()
+                return Response(status=status.HTTP_200_OK)
+
+    return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
-@api_view(['POST'])
+@api_view(['GET', 'POST'])
 def follow(request, nickname):
     user = get_object_or_404(get_user_model(), nickname=nickname)
-    if user != request.user:
+    if request.method == 'GET':
         if user.followers.filter(pk=request.user.pk).exists():
-            user.followers.remove(request.user)
+            followed = True
         else:
-            user.followers.add(request.user)
-    return HttpResponse(status=200)
+            followed = False
+    elif request.method == 'POST':
+        if user != request.user:
+            if user.followers.filter(pk=request.user.pk).exists():
+                user.followers.remove(request.user)
+                followed = True
+            else:
+                user.followers.add(request.user)
+                followed = False
+    
+    context = {
+        'followed': followed,
+    }
+    return Response(context, status=status.HTTP_200_OK)
 
 
 @api_view(['GET'])
@@ -133,4 +143,21 @@ def get_review(request, nickname):
     user = get_object_or_404(get_user_model(), nickname=nickname)
     reviews = Review.objects.filter(user=user)
     serializers = ReviewlistSerializer(reviews, many=True)
-    return Response(serializers.data)
+    return Response(serializers.data, status=status.HTTP_200_OK)
+
+
+@api_view(['GET', 'PUT'])
+def upload_img(request, nickname):
+    user = get_object_or_404(get_user_model(), nickname=nickname)
+
+    if request.method == 'GET':
+        serializer = UserImgSerializer(user)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    if request.user != user:
+        return Response({'profile':'권한이 없습니다.'}, status=status.HTTP_403_FORBIDDEN)
+
+    serializer = UserImgSerializer(user, data=request.data)
+    if serializer.is_valid(raise_exception=True):
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_200_OK)
