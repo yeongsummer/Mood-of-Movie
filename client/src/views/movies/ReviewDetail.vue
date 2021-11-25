@@ -2,16 +2,15 @@
   <v-container style="width: 80vw;">
     <div class="review_container">
       <div style="font-size:25px; font-weight:700; margin-bottom:30px;">
-        {{reviewUsername}}님의 <span style="background-color:#C8E6C9; font-size:30px;">{{ movie_title }}</span> 리뷰
+        {{reviewUsername}}님의 <span style="text-shadow:3px 4px #aed3aa; font-size:30px;">{{ movie_title }}</span> 리뷰
       </div>
       <div>
         <v-row>
-          <v-col style="max-width:230px; margin-right: 5px;">
+          <v-col style="max-width:240px; margin-right: 5px;">
             <v-img
               :src="getImgUrl(movie_poster)"
               :lazy-src="getImgUrl(movie_poster)"
               height="329"
-              width="230"
               style="border-radius:7px;"
             >
               <template v-slot:placeholder>
@@ -37,9 +36,9 @@
                 hover
                 size="20"
                 :value="review.rank/2"
-                style="margin-left:10px;"
+                style="margin-left:20px;"
               ></v-rating>
-              <span>{{review.rank}}</span>
+              <span>{{review.rank}} / 10</span>
               <div style="text-align: left; font-size: 0.9rem;">작성: {{ review.created_at | moment('YYYY-MM-DD') }} | 최근수정:
                 {{ review.updated_at | moment('YYYY-MM-DD') }} </div>
             </div>
@@ -232,7 +231,7 @@
 .review_container {
   margin-top: 3%;
   margin-bottom: 3%;
-  border: 2px solid #8FBC8B;
+  border: 3px solid #aed3aa;
   border-radius: 10px;
   padding: 3%;
 }
