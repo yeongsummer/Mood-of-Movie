@@ -133,9 +133,9 @@ def get_like_movies(request, nickname):
     user = get_object_or_404(get_user_model(), nickname=nickname)
     like_movies = user.like_movies.all()
 
-    serializer = MovielistSerializer(like_movies, many=True)
+    serializers = MovielistSerializer(like_movies, many=True)
     
-    return Response(serializer.data, status=status.HTTP_200_OK)
+    return Response(serializers.data, status=status.HTTP_200_OK)
 
 
 @api_view(['GET'])

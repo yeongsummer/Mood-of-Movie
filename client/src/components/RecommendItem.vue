@@ -80,7 +80,8 @@
         </v-card-text>
         <v-spacer></v-spacer>
         <v-card-actions>
-          <div align="right">
+          <v-spacer></v-spacer>
+          <div>
             <v-btn
               v-if="isLogin"
               color='green lighten-1' 
