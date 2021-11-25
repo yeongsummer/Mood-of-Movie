@@ -1,26 +1,25 @@
 <template>
-  <div style="width: 100%;">
+  <div style="width: 100%; margin-right:55px;">
     <v-card
       class="ma-4"
       width="14.5vw"
       @click="[getMovieVideoKey(movie.id), dialog = true]"
     >
-      <div>
-        <v-img
-          :src="getImgUrl(movie.poster_path)"
-          :lazy-src="getImgUrl(movie.poster_path)"
-          style="height:22vw;"
-        >
-          <template v-slot:placeholder>
-            <v-row class="fill-height ma-0" align="center" justify="center">
-              <v-progress-circular
-                indeterminate
-                color="grey lighten-5"
-              ></v-progress-circular>
-            </v-row>
-          </template>
-        </v-img>
-      </div>
+      <v-img
+        :src="getImgUrl(movie.poster_path)"
+        :lazy-src="getImgUrl(movie.poster_path)"
+        style="height:45vh;"
+      >
+        <template v-slot:placeholder>
+          <v-row class="fill-height ma-0" align="center" justify="center">
+            <v-progress-circular
+              indeterminate
+              color="grey lighten-5"
+            ></v-progress-circular>
+          </v-row>
+        </template>
+      </v-img>
+      
       <div>
         <v-btn icon :color="liked? 'pink':'grey'" @click.stop="movieLike(movie.id)">
           <v-icon>mdi-heart</v-icon>
@@ -60,8 +59,9 @@
             </span>
           </div>
           <div class="director">
+            감독: 
             <span v-for="(director,index) in directors" :key=index> 
-              감독: {{ director }}
+              {{ director }}
             </span>
           </div>
         </v-card-text>
@@ -142,6 +142,7 @@ export default {
       axios({
         method: 'get',
         url: `http://127.0.0.1:8000/movies/movie_video/${movie_pk}/`,
+        headers: this.setToken()
         })
         .then(res => {
           this.videoId = res.data.video_key
