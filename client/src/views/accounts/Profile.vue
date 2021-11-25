@@ -298,60 +298,52 @@
           style="display: inline-block;"
         />
       </div>
-       <div v-if="likeMovieList.length == 0" class="text-center">
+      <div v-if="likeMovieList.length == 0" class="text-center">
         <h1>찜한 영화가 아직 없어요!</h1>
       </div>
       <div v-show="likeMovieList.length" class="background" :style="{'background-image': 'url('+require('@/assets/movie_list.png')+')'}">
-        <v-slide-group
-          class="pa-4"
-          active-class="success"
-          show-arrows
-        >
-        <h1>찜한 영화가 아직 없어요!</h1>
-      </div>
-      <div
-        v-if="likeMovieList.length <= 2" 
-      >
         <div
-          class="background d-flex justify-space-around mb-6" 
-          flat
-          tile
-          :style="{'background-image': 'url('+require('@/assets/movie_list.png')+')'}"
+          v-if="likeMovieList.length <= 3" 
         >
-          <v-slid-item
-            v-for="movie in likeMovieList"
-            :key="movie.id"
-            class="pa-2"
-            outlined
+          <div
+            class="background d-flex justify-space-around mb-6" 
+            flat
             tile
+            :style="{'background-image': 'url('+require('@/assets/movie_list.png')+')'}"
           >
-            <like-movie-item
-              :movie="movie"
-            />
-          </v-slid-item>
-        </div>
-      </div>
-      <div
-        v-if="likeMovieList.length > 2" 
-      >
-        <div
-          class="background" 
-          :style="{'background-image': 'url('+require('@/assets/movie_list.png')+')'}"
-        >
-          <v-slide-group
-            class="pa-4"
-            active-class="success"
-            show-arrows
-          >
-            <v-slide-item
+            <v-slid-item
               v-for="movie in likeMovieList"
               :key="movie.id"
+              class="pa-2"
+              outlined
+              tile
             >
               <like-movie-item
                 :movie="movie"
               />
-            </v-slide-item>
-          </v-slide-group>
+            </v-slid-item>
+          </div>
+        </div>
+        <div v-else >
+          <div
+            class="background" 
+            :style="{'background-image': 'url('+require('@/assets/movie_list.png')+')'}"
+          >
+            <v-slide-group
+              class="pa-4"
+              active-class="success"
+              show-arrows
+            >
+              <v-slide-item
+                v-for="movie in likeMovieList"
+                :key="movie.id"
+              >
+                <like-movie-item
+                  :movie="movie"
+                />
+              </v-slide-item>
+            </v-slide-group>
+          </div>
         </div>
       </div>
     </div>
