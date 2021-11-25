@@ -1,6 +1,9 @@
 <template>
   <div id="review-list-item">
     <div class="review_info">
+      <div class="movie_title">
+        {{review.movie.title}}
+      </div>
       <div class="review__info-title">
         {{ review.title }}
       </div>
@@ -45,7 +48,7 @@ export default {
   margin: 24px;
   border: 2px solid #ebebec;
   border-radius: 4px;
-  padding: 12px 8px;
+  padding: 15px 8px;
   color:#484848;
 
 }
@@ -56,9 +59,15 @@ export default {
   transition: 0.2s;
   transform: translateY(-2px);
 }
-
+.movie_title {
+  display: inline;
+  margin: 10px;
+  background-color: #f8e6ab;
+  border-radius: 5px;
+  padding: 6px 4px 4px 4px;
+}
 .review__info-title {
-  margin-top: 5px;
+  margin-top: 10px;
   margin-left: 10px;
   font-weight: bold;
   font-size: 1.5rem;

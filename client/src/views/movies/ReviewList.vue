@@ -36,7 +36,7 @@
     </v-toolbar>
     <h1 v-if="!nickname" class="text-center">로그인을 해주세요!</h1>
     <div v-if="nickname" class= "my-10 mx-5 text-center">
-      <span style="text-shadow:3px 4px #aed3aa; font-size:40px; font-weight: 700;">{{ movie_title }}</span>
+      <span style="text-shadow:3px 4px #FCCC2D; font-size:40px; font-weight: 700;">{{ movie_title }}</span>
     </div>
     <div v-if="review_list.length == 0" class="text-center">
       <div v-if="flag">
@@ -161,12 +161,26 @@ export default {
     }
   },
   created: function () {
-    if ((this.isLogin) && (this.$route.params.movie_pk)) {
-      this.flag = true
-      this.movie_pk = this.$route.params.movie_pk
-      this.movie_title = this.$route.params.movie_title
-      this.getReview()
-    } 
+    if (this.isLogin) {
+      if (this.$route.params.movie_pk) {
+        this.flag = true
+        this.movie_pk = this.$route.params.movie_pk
+        this.movie_title = this.$route.params.movie_title
+        this.getReview()
+      } else{
+        axios({
+          method: 'get',
+          url: `http://127.0.0.1:8000/movies/review_list/`,
+          headers: this.setToken()
+          })
+          .then(res => {
+            this.review_list = res.data
+          })
+          .catch(err => {
+            console.log(err)
+          })
+      }
+    }
   }
 }
 </script>

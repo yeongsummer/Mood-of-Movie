@@ -3,7 +3,7 @@
     <div v-for="comment in comments" :key="comment.id" class="media mt-3">
       <p style="font-weight:700; margin-bottom:5px;">{{ comment.nickname }}</p>
       <span>{{ comment.content }}</span>
-      <span style="margin-left:10px; font-size:12px;">{{ comment.created_at | moment('YYYY-MM-DD hh:mm') }}</span>
+      <span style="margin-left:10px; font-size:12px;">{{ comment.created_at | moment('YYYY-MM-DD') }}</span>
       <v-btn class="ml-4" small depressed v-if="comment.nickname === nickname " @click="deleteComment(comment)">
         삭제
       </v-btn>
@@ -53,6 +53,9 @@ export default {
           console.log(err)
         })
     },
+  },
+  created() {
+    console.log(this.comments)
   }
 }
 

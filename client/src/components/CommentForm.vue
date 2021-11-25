@@ -61,7 +61,8 @@
             const commentItem = {
               id: res.data.id,
               nickname: this.nickname,
-              content: this.content
+              content: this.content,
+              created_at: res.data.created_at,
             }
             this.$store.dispatch('createComments', commentItem) 
             this.content = ''

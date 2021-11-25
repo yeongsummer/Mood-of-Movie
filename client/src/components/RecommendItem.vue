@@ -1,5 +1,5 @@
 <template>
-  <div style="width: 100%; margin-right:55px;">
+  <div style="width: 100%; margin-right:45px;">
     <v-card
       class="ma-4"
       width="14.5vw"
