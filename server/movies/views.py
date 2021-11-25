@@ -91,6 +91,14 @@ def movie_detail(request, movie_title):
         return Response(serializer.data)
 
 
+@api_view(['GET'])
+def review_list_all(request):
+    if request.method == 'GET':
+        reviews = Review.objects.all()
+        serializers = ReviewlistSerializer(reviews, many=True)
+        return Response(serializers.data)
+
+
 @api_view(['GET', 'POST'])
 def review_list_create(request, movie_pk):
     if request.method == 'GET':

@@ -1,11 +1,27 @@
 <template>
+<div>
+  <v-parallax
+    dark
+    src="@/assets/main_image.jpg"
+    height="600"
+  >
+    <v-row
+      align="center"
+      justify="center"
+    >
+      <v-col
+        class="text-center"
+        cols="12"
+      >
+        <h1 class="text-h3" style="font-weight:700;">
+          <p style="text-shadow:3px 3px #000000;">지금 나에게 맞는 영화를 찾고,</p>
+          <p style="text-shadow:3px 3px #000000;">나만의 영화 경험을 공유하세요.</p>
+        </h1>
+      </v-col>
+    </v-row>
+  </v-parallax>
+
   <v-container style="width: 80vw;">
-    <div class="background" :style="{'background-image': 'url('+require('@/assets/main_image.jpg')+')','width':'100%'}">
-      <div class="main_text">
-        <p>지금 나에게 맞는 영화를 찾고,</p>
-        <p>나만의 영화 경험을 공유하세요.</p>
-      </div>
-    </div>
     <p class="text-center" style="margin: 20px; font-size: 4vw; font-weight:700; text-shadow:6px 6px #f1cb70">TOP 20</p>
     <v-row no-gutters class="justify-center background2" :style="{'background-image': 'url('+require('@/assets/list_cover.png')+')','width':'100%'}">
       <movie-list-item 
@@ -17,6 +33,7 @@
       </movie-list-item>
     </v-row>
   </v-container>
+</div>
 </template>
 
 <script>
