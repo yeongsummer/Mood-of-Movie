@@ -105,7 +105,7 @@
 
 #### **[회원 가입]**
 
-![signup](../../Downloads/signup.gif)
+![signup](README.assets/signup.gif)
 
 - 회원 가입 유효성 검사 구현
   - 아이디 : 이메일
@@ -116,7 +116,7 @@
 
 #### **[프로필 페이지]**
 
-![profile_image](../../Downloads/profile_image.gif)
+![profile_image](README.assets/profile_image.gif)
 
 ![follow](README.assets/follow.gif)
 
@@ -137,7 +137,7 @@
 
 #### **[인기 영화]**
 
-![ranking](../../Downloads/ranking.gif)
+![ranking](README.assets/ranking.gif)
 
 - 현재 TOP 20 인기 영화 정보 제공 (매일 새로 정보 갱신)
 - 영화 카드를 누르면 해당 영화 상세 정보 다이얼로그 실행
@@ -149,9 +149,9 @@
 
 #### **[추천 & 검색]**
 
-![recommend_3](../../Downloads/recommend_3.gif)
+![recommend_3](README.assets/recommend_3.gif)
 
-![recommend_4](../../Downloads/recommend_4.gif)
+![recommend_4](README.assets/recommend_4.gif)
 
 - 검색 자동 완성 기능 제공
 - 검색어가 포함된 영화 제목 리스트 제공
@@ -162,7 +162,7 @@
 
 #### **[리뷰 & 댓글]**
 
-![review_list](../../Downloads/review_list.gif)
+![review_list](README.assets/review_list.gif)
 
 ![add_review](README.assets/add_review.gif)
 
