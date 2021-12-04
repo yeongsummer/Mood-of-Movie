@@ -158,7 +158,6 @@ export default {
         headers: this.setToken()
         })
         .then(res => {
-          console.log(res)
           this.recommended_movies = res.data
         })
         .catch(err => {
@@ -176,28 +175,27 @@ export default {
       }, 500)
     },
   },
-  created() {
-    console.log(this.recommend_movie_list.length)
-    function get_default_movie(movie_title) {
-        return axios ({
-          method: 'get',
-          url: `http://127.0.0.1:8000/movies/movie_recommend/${movie_title}/`
-          })
-      }
-    if (this.recommend_movie_list.length != 5) {
-      const default_movie = ['소울', '러브 액츄얼리', '캡틴 마블', '모아나', '텍사스 전기톱 연쇄살인사건']
-      let recommendMovie = []
+  // created() {
+  //   console.log(this.recommend_movie_list.length)
+  //   function get_default_movie(movie_title) {
+  //       return axios ({
+  //         method: 'get',
+  //         url: `http://127.0.0.1:8000/movies/movie_recommend/${movie_title}/`
+  //         })
+  //     }
+  //   if (this.recommend_movie_list.length != 5) {
+  //     const default_movie = ['소울', '러브 액츄얼리', '캡틴 마블', '모아나', '텍사스 전기톱 연쇄살인사건']
+  //     let recommendMovie = []
 
       
-      Promise.all(default_movie.map(get_default_movie)).then(res => { 
-        console.log('이해가 안되네?', res)
-        res.forEach((movies) => {
-          recommendMovie.push(movies.data)
-        this.$router.commit('GET_RECOMMEND_MOVIES', recommendMovie)
-        })
-      })
-    }
-  }
+  //     Promise.all(default_movie.map(get_default_movie)).then(res => { 
+  //       res.forEach((movies) => {
+  //         recommendMovie.push(movies.data)
+  //       this.$router.commit('GET_RECOMMEND_MOVIES', recommendMovie)
+  //       })
+  //     })
+  //   }
+  // }
 }
 </script>
 
