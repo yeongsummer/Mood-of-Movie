@@ -63,7 +63,7 @@
 
 
 
-### UI 프로토 타입
+### UI 프로토타입
 
 ![img](https://www.notion.so/image/https%3A%2F%2Fs3-us-west-2.amazonaws.com%2Fsecure.notion-static.com%2Fde58fe2c-9eac-41b2-b16e-4abe07a0b931%2FUntitled.png?table=block&id=40a11754-c6d9-4094-a8f7-ca647ac726c9&spaceId=daa2d103-3ecd-4519-8c30-4f55e74c7ef4&width=2000&userId=15ddc9f1-f55d-4520-a0c8-7e7e99a76dbb&cache=v2)
 
